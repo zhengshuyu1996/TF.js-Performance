@@ -2,6 +2,8 @@
 author: David Xiang
 email: xdw@pku.edu.cn
  */
+console.log(tf.getBackend());
+//tf.setBackend("cpu");
 var btn = document.getElementById("train");
 var nConv = document.getElementById("nConv");
 var nPool = document.getElementById("nPool");
@@ -12,7 +14,7 @@ var mInfo, tInfo;
 const LEARNING_RATE = 0.15;
 const optimizer = tf.train.sgd(LEARNING_RATE);
 const BATCH_SIZE = 64;
-const TRAIN_BATCHES = 100;
+const TRAIN_BATCHES = 150;
 const TEST_BATCH_SIZE = 1000;
 const TEST_ITERATION_FREQUENCY = 5;
 
@@ -80,10 +82,13 @@ async function train(nconv, npool){
             return [batch, validationData];
         });
 
-        const history = await model.fit(
-            batch.xs, 
-            batch.labels,
-            {batchSize: BATCH_SIZE, validationData, epochs: 1});
+        let history;
+        //let info = await tf.time(async()=>{
+            history = await model.fit(
+                batch.xs, 
+                batch.labels,
+                {batchSize: BATCH_SIZE, validationData, epochs: 1});
+        //});
 
         const loss = history.history.loss[0];
         const accuracy = history.history.acc[0];
@@ -97,10 +102,14 @@ async function train(nconv, npool){
         // get memory performance
         if (i == parseInt(TRAIN_BATCHES / 2)){
             mInfo = tf.memory();
+            //console.log(JSON.stringify(mInfo));
         }
 
         tf.dispose([batch, validationData]);
-        await tf.nextFrame();
+        //let info2 = await tf.time(async()=>{
+            await tf.nextFrame();
+            //});
+        //console.log(JSON.stringify(info));
     }
 }
 
@@ -118,13 +127,18 @@ btn.onclick = async function(){
     equation.innerText = "total num of layers: (" + nconv + " + 1) * "
         + npool + " + 2 = " + ((nconv + 1) * npool + 2);
     
-    tInfo = await tf.time(async function(){
+    console.log("start training");
+    console.time("train");
+    //tInfo = await tf.time(()=>{
         await train(nconv, npool);
-    });
+    //});
+    console.timeEnd("train");
 
     mPerform.innerText = "memory performance: " + JSON.stringify(mInfo);
     tPerform.innerText = "time performance: " + JSON.stringify(tInfo);
-    statusLog("Finished")
+    statusLog("Finished");
+    console.log(tf.getBackend());
 };
 
 load();
+
