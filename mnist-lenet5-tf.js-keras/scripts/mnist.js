@@ -15,11 +15,13 @@ const LEARNING_RATE = 0.15;
 const optimizer = tf.train.sgd(LEARNING_RATE);
 const BATCH_SIZE = 64;
 const TRAIN_BATCHES = 1500;
-const TEST_BATCH_SIZE = 10000;
+const TEST_BATCH_SIZE = 1000;
 const TEST_ITERATION_FREQUENCY = 5;
 
 async function train(nconv, npool){
     const model = tf.sequential();
+
+    // conv1 
     model.add(tf.layers.conv2d({
         inputShape: [28, 28, 1],
         kernelSize: 5,
@@ -32,12 +34,14 @@ async function train(nconv, npool){
         biasInitializer: tf.initializers.constant({value:0.0})
     }));
 
+    // pool1
     model.add(tf.layers.maxPooling2d({
         poolSize: [2, 2],
         strides: [2, 2],
         padding: 'same'
     }));
 
+    // conv2
     model.add(tf.layers.conv2d({
         inputShape: [14, 14, 6],
         kernelSize: 5,
@@ -50,16 +54,19 @@ async function train(nconv, npool){
         biasInitializer: tf.initializers.constant({value:0.0})
     }));
 
+    // pool2
     model.add(tf.layers.maxPooling2d({
         poolSize: [2, 2],
         strides: [2, 2],
         padding: 'same'
     }));
 
+    // flatten
     model.add(tf.layers.flatten({
         inputShape: [5, 5, 16]
     }));
 
+    // dense1
     model.add(tf.layers.dense({
         inputShape: [400],
         units: 120,
@@ -70,6 +77,7 @@ async function train(nconv, npool){
         kernelRegularizer: tf.regularizers.l2()
     }));
 
+    // dense2
     model.add(tf.layers.dense({
         inputShape: [120],
         units: 84,
@@ -80,6 +88,7 @@ async function train(nconv, npool){
         kernelRegularizer: tf.regularizers.l2()
     }));
 
+    // dense3
     model.add(tf.layers.dense({
         units: 10,
         kernelInitializer: tf.initializers.truncatedNormal({stddev:0.1}),
@@ -109,13 +118,10 @@ async function train(nconv, npool){
             return [batch, validationData];
         });
 
-        let history;
-        //let info = await tf.time(async()=>{
-            history = await model.fit(
-                batch.xs, 
-                batch.labels,
-                {batchSize: BATCH_SIZE, validationData, epochs: 1});
-        //});
+        let history = await model.fit(
+            batch.xs, 
+            batch.labels,
+            {batchSize: BATCH_SIZE, validationData, epochs: 1});
 
         const loss = history.history.loss[0];
         const accuracy = history.history.acc[0];
@@ -156,13 +162,10 @@ btn.onclick = async function(){
     
     console.log("start training");
     console.time("train");
-    //tInfo = await tf.time(()=>{
-        await train(nconv, npool);
-    //});
+    await train(nconv, npool);
     console.timeEnd("train");
 
     mPerform.innerText = "memory performance: " + JSON.stringify(mInfo);
-    tPerform.innerText = "time performance: " + JSON.stringify(tInfo);
     statusLog("Finished");
     console.log(tf.getBackend());
 };

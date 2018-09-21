@@ -1,1 +1,7 @@
-data/
+mnist-data
+.DS_Store
+mnist-lenet5-tf/.*
+mnist-lenet5-tf/bin
+mnist-lenet5-tf/include
+mnist-lenet5-tf/lib
+
