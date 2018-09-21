@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 mnist-data
 .DS_Store
 mnist-lenet5-tf/.*
 mnist-lenet5-tf/bin
 mnist-lenet5-tf/include
 mnist-lenet5-tf/lib
-
-=======
-data/
-.DS_Store
->>>>>>> 854ec8bbeb368d89658a06803f00bc7d04139a76
