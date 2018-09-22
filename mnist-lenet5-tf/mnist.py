@@ -21,18 +21,19 @@ DENSE1_SIZE = 120
 DENSE2_SIZE = 84
 
 
-def inference(input_tensor, regularizer):
+def inference(input_tensor): #, regularizer):
     # conv1
     with tf.variable_scope("conv1"):
         conv1_weights = tf.get_variable(
                 "weight", [CONV1_SIZE, CONV1_SIZE, NUM_CHANNELS, CONV1_DEEP],
                 initializer=tf.truncated_normal_initializer(stddev=0.1))
-        conv1_biases = tf.get_variable(
-                "bias", [CONV1_DEEP], 
-                initializer=tf.constant_initializer(0.0))
+    # conv1_biases = tf.get_variable(
+    #            "bias", [CONV1_DEEP], 
+    #            initializer=tf.constant_initializer(0.0))
         conv1 = tf.nn.conv2d(
                 input_tensor, conv1_weights, strides=[1, 1, 1, 1], padding="SAME")
-        relu1 = tf.nn.relu(tf.nn.bias_add(conv1, conv1_biases))
+    #    relu1 = tf.nn.relu(tf.nn.bias_add(conv1, conv1_biases))
+        relu1 = tf.nn.relu(conv1)
 
     # pool1
     with tf.variable_scope("pool1"):
@@ -44,13 +45,13 @@ def inference(input_tensor, regularizer):
         conv2_weights = tf.get_variable(
                 "weight", [CONV2_SIZE, CONV2_SIZE, CONV1_DEEP, CONV2_DEEP],
                 initializer=tf.truncated_normal_initializer(stddev=0.1))
-        conv2_biases = tf.get_variable(
-                "bias", [CONV2_DEEP], 
-                initializer=tf.constant_initializer(0.0))
+        # conv2_biases = tf.get_variable(
+        #        "bias", [CONV2_DEEP], 
+        #        initializer=tf.constant_initializer(0.0))
         conv2 = tf.nn.conv2d(
                 pool1, conv2_weights, strides=[1, 1, 1, 1], padding="VALID")
-        relu2 = tf.nn.relu(tf.nn.bias_add(conv2, conv2_biases))
-
+        # relu2 = tf.nn.relu(tf.nn.bias_add(conv2, conv2_biases))
+        relus2 = tf.nn.relu(conv2)
     # pool2
     with tf.variable_scope("pool2"):
         pool2 = tf.nn.max_pool(
@@ -58,8 +59,6 @@ def inference(input_tensor, regularizer):
 
     # get pool shape
     pool_shape = pool2.get_shape().as_list()
-    print("pool_shape")
-    print(pool_shape)
     
     # flatten
     nodes = pool_shape[1] * pool_shape[2] * pool_shape[3]
@@ -73,8 +72,8 @@ def inference(input_tensor, regularizer):
         dense1_biases = tf.get_variable(
                 "bias", [DENSE1_SIZE],
                 initializer=tf.constant_initializer(0.0))
-        if regularizer is not None:
-            tf.add_to_collection("losses", regularizer(dense1_weights))
+        # if regularizer is not None:
+        #    tf.add_to_collection("losses", regularizer(dense1_weights))
         dense1 = tf.nn.relu(
                 tf.matmul(reshaped, dense1_weights) + dense1_biases)
 
@@ -86,8 +85,8 @@ def inference(input_tensor, regularizer):
         dense2_biases = tf.get_variable(
                 "bias", [DENSE2_SIZE],
                 initializer=tf.constant_initializer(0.0))
-        if regularizer is not None:
-            tf.add_to_collection("losses", regularizer(dense2_weights))
+    # if regularizer is not None:
+    #        tf.add_to_collection("losses", regularizer(dense2_weights))
         dense2 = tf.nn.relu(
                 tf.matmul(dense1, dense2_weights) + dense2_biases)
 
@@ -99,8 +98,8 @@ def inference(input_tensor, regularizer):
         dense3_biases = tf.get_variable(
                 "bias", [OUTPUT_NODE],
                 initializer=tf.constant_initializer(0.0))
-        if regularizer is not None:
-            tf.add_to_collection("losses", regularizer(dense3_weights))
+    # if regularizer is not None:
+    #        tf.add_to_collection("losses", regularizer(dense3_weights))
         dense3 = tf.matmul(dense2, dense3_weights) + dense3_biases
         
     return dense3
@@ -113,9 +112,9 @@ def train(mnist):
             tf.float32, [None, OUTPUT_NODE], name="y-input")
     global_step = tf.Variable(0, trainable=False)
 
-    regularizer = tf.contrib.layers.l2_regularizer(
-            REGULARAZTION_RATE)
-    y = inference(x, regularizer)
+    # regularizer = tf.contrib.layers.l2_regularizer(
+    #        REGULARAZTION_RATE)
+    y = inference(x)#, regularizer)
 
     # wrong ?
     #cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(

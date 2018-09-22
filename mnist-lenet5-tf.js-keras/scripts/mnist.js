@@ -9,7 +9,7 @@ var nConv = document.getElementById("nConv");
 var nPool = document.getElementById("nPool");
 var equation = document.getElementById("equation");
 var mPerform = document.getElementById("mPerform");
-var mInfo, tInfo;
+var mInfo;
 
 const LEARNING_RATE = 0.15;
 const optimizer = tf.train.sgd(LEARNING_RATE);
@@ -30,8 +30,8 @@ async function train(nconv, npool){
         activation: 'relu',
         kernelInitializer: tf.initializers.truncatedNormal({stddev:0.1}),
         padding: 'same',
-        useBias: true,
-        biasInitializer: tf.initializers.constant({value:0.0})
+        //useBias: true,
+        //biasInitializer: tf.initializers.constant({value:0.0})
     }));
 
     // pool1
@@ -50,8 +50,8 @@ async function train(nconv, npool){
         activation: 'relu',
         kernelInitializer: tf.initializers.truncatedNormal({stddev:0.1}),
         padding: 'valid',
-        useBias: true,
-        biasInitializer: tf.initializers.constant({value:0.0})
+        //useBias: true,
+        //biasInitializer: tf.initializers.constant({value:0.0})
     }));
 
     // pool2
@@ -74,7 +74,7 @@ async function train(nconv, npool){
         useBias: true,
         biasInitializer: tf.initializers.constant({value:0.0}),
         kernelInitializer: tf.initializers.truncatedNormal({stddev:0.1}),
-        kernelRegularizer: tf.regularizers.l2()
+        //kernelRegularizer: tf.regularizers.l2()
     }));
 
     // dense2
@@ -85,7 +85,7 @@ async function train(nconv, npool){
         useBias: true,
         biasInitializer: tf.initializers.constant({value:0.0}),
         kernelInitializer: tf.initializers.truncatedNormal({stddev:0.1}),
-        kernelRegularizer: tf.regularizers.l2()
+        //kernelRegularizer: tf.regularizers.l2()
     }));
 
     // dense3
@@ -104,13 +104,13 @@ async function train(nconv, npool){
     statusLog("Training");
 
     for (let i = 0; i < TRAIN_BATCHES; i++){
-        const [batch, validationData] = tf.tidy(()=>{
-            const batch = data.nextTrainBatch(BATCH_SIZE);
+        let [batch, validationData] = tf.tidy(()=>{
+            let batch = data.nextTrainBatch(BATCH_SIZE);
             batch.xs = batch.xs.reshape([BATCH_SIZE, 28, 28, 1]);
 
             let validationData;
             if (i % TEST_ITERATION_FREQUENCY === 0){
-                const testBatch = data.nextTestBatch(TEST_BATCH_SIZE);
+                let testBatch = data.nextTestBatch(TEST_BATCH_SIZE);
                 validationData = [
                     testBatch.xs.reshape([TEST_BATCH_SIZE, 28, 28, 1]), testBatch.labels
                 ];
@@ -123,8 +123,8 @@ async function train(nconv, npool){
             batch.labels,
             {batchSize: BATCH_SIZE, validationData, epochs: 1});
 
-        const loss = history.history.loss[0];
-        const accuracy = history.history.acc[0];
+        let loss = history.history.loss[0];
+        let accuracy = history.history.acc[0];
 
         if (validationData != null)
             infoLog('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
