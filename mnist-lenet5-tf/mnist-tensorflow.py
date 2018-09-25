@@ -1,18 +1,20 @@
 import tensorflow as tf
 import numpy as np
+import time
 from tensorflow.examples.tutorials.mnist import input_data
 
-LEARNING_RATE = 0.15
-REGULARAZTION_RATE = 0.01
 BATCH_SIZE = 64
-TRAIN_BATCHES = 1500
+TRAIN_BATCHES = 7500
 TEST_BATCH_SIZE = 1000
-TEST_ITERATION_FREQUENCY = 5
+TEST_ITERATION_FREQUENCY = 1000
+
 IMAGE_SIZE = 28
 INPUT_NODE = 784
 OUTPUT_NODE = 10
 NUM_CHANNELS = 1
 
+LEARNING_RATE = 0.15
+# REGULARAZTION_RATE = 0.01
 CONV1_SIZE = 5
 CONV1_DEEP = 6
 CONV2_SIZE = 5
@@ -51,7 +53,8 @@ def inference(input_tensor): #, regularizer):
         conv2 = tf.nn.conv2d(
                 pool1, conv2_weights, strides=[1, 1, 1, 1], padding="VALID")
         # relu2 = tf.nn.relu(tf.nn.bias_add(conv2, conv2_biases))
-        relus2 = tf.nn.relu(conv2)
+        relu2 = tf.nn.relu(conv2)
+
     # pool2
     with tf.variable_scope("pool2"):
         pool2 = tf.nn.max_pool(
@@ -121,7 +124,6 @@ def train(mnist):
     #        logits=tf.cast(tf.argmax(y, 1), tf.float32),
     #        labels=tf.cast(tf.argmax(y_, 1), tf.float32))
 
-
     cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
         logits = y,
         labels = tf.argmax(y_, 1)
@@ -138,13 +140,14 @@ def train(mnist):
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         vx = mnist.validation.images
+        vx = vx[:TEST_BATCH_SIZE]
 
-        vx_reshaped = np.reshape(vx, (len(vx),
-                                      IMAGE_SIZE,
-                                      IMAGE_SIZE,
-                                      NUM_CHANNELS))
-        validate_feed = {x: vx_reshaped,
-                         y_: mnist.validation.labels}
+        x_eval = np.reshape(vx, (len(vx),
+                            IMAGE_SIZE,
+                            IMAGE_SIZE,
+                            NUM_CHANNELS))
+        validate_feed = {x: x_eval,
+                         y_: mnist.validation.labels[:TEST_BATCH_SIZE]}
 
         for i in range(TRAIN_BATCHES):
             # prepare training data
@@ -163,8 +166,11 @@ def train(mnist):
 
 
 def main(argv=None):
-    mnist = input_data.read_data_sets("./mnist-data", one_hot=True)
+    mnist = input_data.read_data_sets("../mnist-data", one_hot=True)
+    start = time.time()
     train(mnist)
+    end = time.time()
+    print("total training time(wall clock time): ", end-start, "s")
 
 
 if __name__ == "__main__":

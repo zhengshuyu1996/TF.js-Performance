@@ -9,18 +9,17 @@
     <body>
         <div style="padding-left:5%">
         <h1>TensorFlow.js - MNIST Performance Test on Keras API</h1>
-        <h2>Construct the Neuron Network</h2>
-            <form>
-                <input type="text" id="nConv" value="1"> convolutional layers before a pooling layer<br>
-                <input type="text" id="nPool" value="2"> pooling layers<br>
-            </form><br>
-            <button id="train">train</button>
-            <p id="equation">total num of layers: (1 + 1) * 2 + 2 = 6</p>
+        <form>
+            <input type="checkbox" id="use gpu" checked="checked">use gpu<br>
+        </form>
+        <br>
+        <button id="train">train</button>
+
         <h2 id="status">Status: Loading Data</h2>
-            <p id="tPerform"></p>
-            <p id="mPerform"></p>
         <h2>Log</h2>
-            <p id="info"></p>
+            <p id="info">
+                For the sake of accuracy of performance measurment, please view logs in console.
+            </p>
 
         <h2>Network Infomation</h2>
         <h3>Structure of Neuron Network</h3>
@@ -33,9 +32,9 @@
         <h3>Hyper Parameters</h3>
             <p>Learning Rate: 0.15</p>
             <p>Batch Size: 64</p>
-            <p>Training Batches: 150</p>
+            <p>Training Batches: 7500</p>
             <p>Test Batch Size: 1000</p>
-            <p>Test Iteration Frequency: 5</p>
+            <p>Test Iteration Frequency: 1000</p>
         </div>
 
         <script src="scripts/tfjs@0.13.0"></script>

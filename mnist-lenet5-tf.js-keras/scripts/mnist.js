@@ -3,21 +3,19 @@ author: David Xiang
 email: xdw@pku.edu.cn
  */
 let btn = document.getElementById("train");
-let nConv = document.getElementById("nConv");
-let nPool = document.getElementById("nPool");
-let equation = document.getElementById("equation");
+let ckbx = document.getElementById("use gpu");
 
-const LEARNING_RATE = 0.15;
-const optimizer = tf.train.sgd(LEARNING_RATE);
 const BATCH_SIZE = 64;
-const TRAIN_BATCHES = 1500;
+const TRAIN_BATCHES = 7500;
 const TEST_BATCH_SIZE = 1000;
-const TEST_ITERATION_FREQUENCY = 5;
+const TEST_ITERATION_FREQUENCY = 1000;
 const IMAGE_LENGTH = 28;
 const INPUT_NODE = 784;
 const OUTPUT_NODE = 10;
 const NUM_CHANNELS = 1;
 
+const LEARNING_RATE = 0.15;
+const optimizer = tf.train.sgd(LEARNING_RATE);
 const CONV1_SIZE = 5;
 const CONV1_DEEP = 6;
 const CONV2_SIZE = 5;
@@ -26,7 +24,7 @@ const FLATTEN = 784;
 const DENSE1_SIZE = 120;
 const DENSE2_SIZE = 84;
 
-async function train(nconv, npool){
+async function train(){
     const model = tf.sequential();
 
     // conv1 
@@ -116,8 +114,7 @@ async function train(nconv, npool){
             if (i % TEST_ITERATION_FREQUENCY === 0){
                 let testBatch = data.nextTestBatch(TEST_BATCH_SIZE);
                 validationData = [
-                    testBatch.xs.reshape([
-                        TEST_BATCH_SIZE, IMAGE_LENGTH, IMAGE_LENGTH, NUM_CHANNELS]), 
+                    testBatch.xs.reshape([TEST_BATCH_SIZE, IMAGE_LENGTH, IMAGE_LENGTH, NUM_CHANNELS]), 
                     testBatch.labels
                 ];
             }
@@ -134,22 +131,19 @@ async function train(nconv, npool){
         let accuracy = history.history.acc[0];
 
         if (validationData != null)
-            infoLog('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
+            console.log('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
                 "    Accuracy: " + accuracy.toFixed(3));
-        else
-            infoLog('Batch #' + i + "    Loss: " + loss.toFixed(3));
+        //else
+            //console.log('Batch #' + i + "    Loss: " + loss.toFixed(3));
 
         // get memory performance
-        if (i == parseInt(TRAIN_BATCHES / 2)){
+        /*if (i == parseInt(TRAIN_BATCHES / 2)){
             mInfo = tf.memory();
-            //console.log(JSON.stringify(mInfo));
-        }
+            console.log(JSON.stringify(mInfo));
+        }*/
 
         tf.dispose([batch, validationData]);
-        //let info2 = await tf.time(async()=>{
-            await tf.nextFrame();
-            //});
-        //console.log(JSON.stringify(info));
+        await tf.nextFrame();
     }
 }
 
@@ -162,19 +156,19 @@ async function load(){
 }
 
 btn.onclick = async function(){
-    nconv = parseInt(nConv.value);
-    npool = parseInt(nPool.value);
-    equation.innerText = "total num of layers: (" + nconv + " + 1) * "
-        + npool + " + 2 = " + ((nconv + 1) * npool + 2);
-    
+    if (ckbx.checked == true){
+        tf.setBackend("webgl");
+    }else{
+        tf.setBackend("cpu");
+    }
+    console.log(tf.getBackend());
     console.log("start training");
+
     console.time("train");
-    await train(nconv, npool);
+    await train();
     console.timeEnd("train");
 
-    mPerform.innerText = "memory performance: " + JSON.stringify(mInfo);
     statusLog("Finished");
-    console.log(tf.getBackend());
 };
 
 load();
