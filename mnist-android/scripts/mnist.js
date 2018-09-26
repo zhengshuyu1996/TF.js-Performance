@@ -2,60 +2,98 @@
 author: David Xiang
 email: xdw@pku.edu.cn
  */
-console.log(tf.getBackend());
-//tf.setBackend("cpu");
-var btn = document.getElementById("train");
-var nConv = document.getElementById("nConv");
-var nPool = document.getElementById("nPool");
-var equation = document.getElementById("equation");
-var mPerform = document.getElementById("mPerform");
-var mInfo, tInfo;
+let btn = document.getElementById("train");
+let ckbx = document.getElementById("use gpu");
+tf.setBackend("cpu");
+
+const BATCH_SIZE = 64;
+const TRAIN_BATCHES = 250;
+const TEST_BATCH_SIZE = 1000;
+const TEST_ITERATION_FREQUENCY = 1000;
+const IMAGE_LENGTH = 28;
+const INPUT_NODE = 784;
+const OUTPUT_NODE = 10;
+const NUM_CHANNELS = 1;
 
 const LEARNING_RATE = 0.15;
 const optimizer = tf.train.sgd(LEARNING_RATE);
-const BATCH_SIZE = 64;
-const TRAIN_BATCHES = 150;
-const TEST_BATCH_SIZE = 1000;
-const TEST_ITERATION_FREQUENCY = 5;
+const CONV1_SIZE = 5;
+const CONV1_DEEP = 6;
+const CONV2_SIZE = 5;
+const CONV2_DEEP = 16;
+const FLATTEN = 784;
+const DENSE1_SIZE = 120;
+const DENSE2_SIZE = 84;
 
-async function train(nconv, npool){
+async function train(){
     const model = tf.sequential();
 
-    for (let i = 0; i < npool; i++){
-        for (let j = 0; j < nconv; j++){
-            if (i == 0 && j == 0){
-                model.add(tf.layers.conv2d({
-                    inputShape: [28, 28, 1],
-                    kernelSize: 5,
-                    filters: 8,
-                    strides: 1,
-                    activation: 'relu',
-                    kernelInitializer: 'varianceScaling',
-                    padding: 'same'
-                }));
-            }else{
-                model.add(tf.layers.conv2d({
-                    kernelSize: 5,
-                    filters: 8,
-                    strides: 1,
-                    activation: 'relu',
-                    kernelInitializer: 'varianceScaling',
-                    padding: 'same'
-                }));
-            }
-        }
-        model.add(tf.layers.maxPooling2d({
-            poolSize: [2, 2], 
-            strides: [2, 2],
-            padding: 'same'
-        }));
-    }
+    // conv1 
+    model.add(tf.layers.conv2d({
+        inputShape: [IMAGE_LENGTH, IMAGE_LENGTH, NUM_CHANNELS],
+        kernelSize: CONV1_SIZE,
+        filters: CONV1_DEEP,
+        strides: 1,
+        activation: 'relu',
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
+        padding: 'same',
+        //useBias: true,
+        //biasInitializer: tf.initializers.constant({value:0.0})
+    }));
 
+    // pool1
+    model.add(tf.layers.maxPooling2d({
+        poolSize: [2, 2],
+        strides: [2, 2],
+        padding: 'same'
+    }));
+
+    // conv2
+    model.add(tf.layers.conv2d({
+        kernelSize: CONV2_SIZE,
+        filters: CONV2_DEEP,
+        strides: 1,
+        activation: 'relu',
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
+        padding: 'valid',
+        //useBias: true,
+        //biasInitializer: tf.initializers.constant({value:0.0})
+    }));
+
+    // pool2
+    model.add(tf.layers.maxPooling2d({
+        poolSize: [2, 2],
+        strides: [2, 2],
+        padding: 'same'
+    }));
+
+    // flatten
     model.add(tf.layers.flatten());
 
+    // dense1
     model.add(tf.layers.dense({
-        units: 10,
-        kernelInitializer: "varianceScaling",
+        units: DENSE1_SIZE,
+        activation: "relu",
+        useBias: true,
+        biasInitializer: tf.initializers.constant({value:0.0}),
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
+        //kernelRegularizer: tf.regularizers.l2()
+    }));
+
+    // dense2
+    model.add(tf.layers.dense({
+        units: DENSE2_SIZE,
+        activation: "relu",
+        useBias: true,
+        biasInitializer: tf.initializers.constant({value:0.0}),
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
+        //kernelRegularizer: tf.regularizers.l2()
+    }));
+
+    // dense3
+    model.add(tf.layers.dense({
+        units: OUTPUT_NODE,
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
         activation: "softmax"
     }));
 
@@ -68,48 +106,47 @@ async function train(nconv, npool){
     statusLog("Training");
 
     for (let i = 0; i < TRAIN_BATCHES; i++){
-        const [batch, validationData] = tf.tidy(()=>{
-            const batch = data.nextTrainBatch(BATCH_SIZE);
-            batch.xs = batch.xs.reshape([BATCH_SIZE, 28, 28, 1]);
+        console.log("Batch " + i);
+        let [batch, validationData] = tf.tidy(()=>{
+            let batch = data.nextTrainBatch(BATCH_SIZE);
+            batch.xs = batch.xs.reshape(
+                [BATCH_SIZE, IMAGE_LENGTH, IMAGE_LENGTH, NUM_CHANNELS]);
 
             let validationData;
             if (i % TEST_ITERATION_FREQUENCY === 0){
-                const testBatch = data.nextTestBatch(TEST_BATCH_SIZE);
+                let testBatch = data.nextTestBatch(TEST_BATCH_SIZE);
                 validationData = [
-                    testBatch.xs.reshape([TEST_BATCH_SIZE, 28, 28, 1]), testBatch.labels
+                    testBatch.xs.reshape([TEST_BATCH_SIZE, IMAGE_LENGTH, IMAGE_LENGTH, NUM_CHANNELS]), 
+                    testBatch.labels
                 ];
             }
             return [batch, validationData];
         });
 
-        let history;
-        //let info = await tf.time(async()=>{
-            history = await model.fit(
-                batch.xs, 
-                batch.labels,
-                {batchSize: BATCH_SIZE, validationData, epochs: 1});
-        //});
+        let history = await model.fit(
+            batch.xs, 
+            batch.labels,
+            {batchSize: BATCH_SIZE, validationData, epochs: 1}
+        );
 
-        const loss = history.history.loss[0];
-        const accuracy = history.history.acc[0];
+        let loss = history.history.loss[0];
+        let accuracy = history.history.acc[0];
 
-        if (validationData != null)
-            infoLog('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
+        if (validationData != null){
+            console.log('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
                 "    Accuracy: " + accuracy.toFixed(3));
-        else
-            infoLog('Batch #' + i + "    Loss: " + loss.toFixed(3));
+        }
+        //else
+            //console.log('Batch #' + i + "    Loss: " + loss.toFixed(3));
 
         // get memory performance
-        if (i == parseInt(TRAIN_BATCHES / 2)){
+        /*if (i == parseInt(TRAIN_BATCHES / 2)){
             mInfo = tf.memory();
-            //console.log(JSON.stringify(mInfo));
-        }
+            console.log(JSON.stringify(mInfo));
+        }*/
 
         tf.dispose([batch, validationData]);
-        //let info2 = await tf.time(async()=>{
-            await tf.nextFrame();
-            //});
-        //console.log(JSON.stringify(info));
+        await tf.nextFrame();
     }
 }
 
@@ -122,24 +159,21 @@ async function load(){
 }
 
 btn.onclick = async function(){
-    nconv = parseInt(nConv.value);
-    npool = parseInt(nPool.value);
-    equation.innerText = "total num of layers: (" + nconv + " + 1) * "
-        + npool + " + 2 = " + ((nconv + 1) * npool + 2);
-    
+    // could not change backend manully?
+    /*if (ckbx.checked == true){
+        tf.setBackend("webgl");
+    }else{
+        tf.setBackend("cpu");
+    }*/
+    console.log(tf.getBackend());
     console.log("start training");
+
     console.time("train");
-    //tInfo = await tf.time(()=>{
-        await train(nconv, npool);
-    //});
+    await train();
     console.timeEnd("train");
 
-    mPerform.innerText = "memory performance: " + JSON.stringify(mInfo);
-    tPerform.innerText = "time performance: " + JSON.stringify(tInfo);
     statusLog("Finished");
-    console.log(tf.getBackend());
 };
 
 load();
-console.log("executed.");
 

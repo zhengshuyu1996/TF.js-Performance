@@ -129,11 +129,11 @@ async function load(){
 }
 
 btn.onclick = async function(){
-    if (ckbx.checked == true){
+    /*if (ckbx.checked == true){
         tf.setBackend("webgl");
     }else{
         tf.setBackend("cpu");
-    }
+    }*/
     console.log(tf.getBackend());
     console.log("start training");
 

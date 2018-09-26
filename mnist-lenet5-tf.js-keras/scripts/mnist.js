@@ -4,6 +4,7 @@ email: xdw@pku.edu.cn
  */
 let btn = document.getElementById("train");
 let ckbx = document.getElementById("use gpu");
+tf.setBackend("cpu");
 
 const BATCH_SIZE = 64;
 const TRAIN_BATCHES = 7500;
@@ -34,7 +35,7 @@ async function train(){
         filters: CONV1_DEEP,
         strides: 1,
         activation: 'relu',
-        kernelInitializer: tf.initializers.truncatedNormal({mean=0, stddev:0.1}),
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
         padding: 'same',
         //useBias: true,
         //biasInitializer: tf.initializers.constant({value:0.0})
@@ -53,7 +54,7 @@ async function train(){
         filters: CONV2_DEEP,
         strides: 1,
         activation: 'relu',
-        kernelInitializer: tf.initializers.truncatedNormal({mean=0, stddev:0.1}),
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
         padding: 'valid',
         //useBias: true,
         //biasInitializer: tf.initializers.constant({value:0.0})
@@ -75,7 +76,7 @@ async function train(){
         activation: "relu",
         useBias: true,
         biasInitializer: tf.initializers.constant({value:0.0}),
-        kernelInitializer: tf.initializers.truncatedNormal({mean=0, stddev:0.1}),
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
         //kernelRegularizer: tf.regularizers.l2()
     }));
 
@@ -85,14 +86,14 @@ async function train(){
         activation: "relu",
         useBias: true,
         biasInitializer: tf.initializers.constant({value:0.0}),
-        kernelInitializer: tf.initializers.truncatedNormal({mean=0, stddev:0.1}),
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
         //kernelRegularizer: tf.regularizers.l2()
     }));
 
     // dense3
     model.add(tf.layers.dense({
         units: OUTPUT_NODE,
-        kernelInitializer: tf.initializers.truncatedNormal({mean=0, stddev:0.1}),
+        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
         activation: "softmax"
     }));
 
@@ -130,9 +131,10 @@ async function train(){
         let loss = history.history.loss[0];
         let accuracy = history.history.acc[0];
 
-        if (validationData != null)
+        if (validationData != null){
             console.log('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
                 "    Accuracy: " + accuracy.toFixed(3));
+        }
         //else
             //console.log('Batch #' + i + "    Loss: " + loss.toFixed(3));
 
@@ -156,11 +158,12 @@ async function load(){
 }
 
 btn.onclick = async function(){
-    if (ckbx.checked == true){
+    // could not change backend manully?
+    /*if (ckbx.checked == true){
         tf.setBackend("webgl");
     }else{
         tf.setBackend("cpu");
-    }
+    }*/
     console.log(tf.getBackend());
     console.log("start training");
 
