@@ -4,10 +4,10 @@ email: xdw@pku.edu.cn
  */
 let btn = document.getElementById("train");
 let ckbx = document.getElementById("use gpu");
-tf.setBackend("cpu");
+tf.setBackend("webgl");
 
 const BATCH_SIZE = 64;
-const TRAIN_BATCHES = 250;
+const TRAIN_BATCHES = 7500;
 const TEST_BATCH_SIZE = 1000;
 const TEST_ITERATION_FREQUENCY = 1000;
 const IMAGE_LENGTH = 28;
