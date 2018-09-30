@@ -6,7 +6,9 @@ we chose about seven popular neuron network JavaScript library to run training a
 
 Dataset: mnist dataset on http://yann.lecun.com/exdb/mnist/
 
-Input: 60000 images * 28 * 28 pixels * 3 channels
+Train Input: 60000 images * 28 * 28 pixels * 1 channels
+
+Test Input: 5000 images * 28 * 28 pixels * 1 channels
 
 Model: a simple DNN model (with a little modification) in [Keras Official Examples](https://github.com/keras-team/keras/blob/master/examples/mnist_mlp.py)
 
