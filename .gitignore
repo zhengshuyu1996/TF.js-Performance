@@ -6,3 +6,4 @@ mnist-lenet5-tf/include
 mnist-lenet5-tf/lib
 mnist-lenet5-tf/pip-selfcheck.json
 mnist-comparison/data
+mnist-comparison/model
