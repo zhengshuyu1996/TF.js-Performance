@@ -3,18 +3,6 @@ author: David Xiang
 email: xdw@pku.edu.cn
  */
 'use strict'
-const BATCH_SIZE = 64;
-const TRAIN_SIZE = 60000; // one epoch
-const TRAIN_BATCHES = TRAIN_SIZE / BATCH_SIZE;
-const TEST_SIZE = 5000;
-
-const IMAGE_LENGTH = 28;
-const INPUT_NODE = 784;
-const HIDDEN_SIZE = 512;
-const OUTPUT_NODE = 10;
-const NUM_CHANNELS = 1;
-
-const LEARNING_RATE = 0.15;
 var net, trainer;
 
 function initNet(){
@@ -49,48 +37,64 @@ function initNet(){
     })
 }
 
+function getLabel(LabelOneHot){
+    let num = LabelOneHot.length/OUTPUT_NODE;
+    let labels = new Uint8Array(num);
 
+    for (let i = 0; i < num; i++){
+        labels[i] = 0;
+        for (let j = 0; j < OUTPUT_NODE; j++){
+            if (LabelOneHot[i * OUTPUT_NODE + j] == 1)
+                labels[i] = j;
+        }
+    }
+    return labels;
+}
 async function train(data){
     statusLog("Training");
 
     console.time("train");
 
     for (let i = 0; i < TRAIN_BATCHES; i++){
-        let batch = data.nextTrainBatch(BATCH_SIZE);
-        let xs = batch[0];
-        let labels = batch[1];
+        let batch = await data.nextTrainBatch(BATCH_SIZE);
+        let xs = batch.xs;
+        let labelsOneHot = batch.labels;
+        let labels = getLabel(labelsOneHot);
         
+        let loss = 0;
         for (let j = 0; j < BATCH_SIZE; j++){
-            let x = new convnetjs.Vol(1, 1, OUTPUT_NODE);
+            let x = new convnetjs.Vol(1, 1, INPUT_NODE);
             let y = labels[j];
-            for (let k = 0; k < OUTPUT_NODE; k++){
-                x.set(1, 1, k, xs[j*OUTPUT_NODE+k]/255.0-0.5);
+            for (let k = 0; k < INPUT_NODE; k++){
+                x.set(0, 0, k, xs[j*INPUT_NODE+k]);
             }
             let stats = trainer.train(x, y);
-
-            if (j == 0){
-                let loss = stats.loss;
-                console.log('Batch #' + i + "    Loss: " + loss.toFixed(3));
-            }
+            //loss += stats.loss;
+            //loss value is incompatible with tfjs?
+            //if (j == BATCH_SIZE - 1){
+                //console.log('Batch #' + i + "    Loss: " + (loss/BATCH_SIZE).toFixed(3));
+            //}
         }
     }
     console.timeEnd("train");
 
     statusLog("Testing");
-    let testData = data.nextTestBatch(TEST_SIZE);
-    let xs = testData[0];
-    let labels = testData[1];
+    let testData = await data.nextTestBatch(TEST_SIZE);
+    let xs = testData.xs;
+    let testlabelsOneHot = testData.labels;
+    let testlabels = getLabel(testlabelsOneHot);
     let count = 0;
     for (let j = 0; j < TEST_SIZE; j++){
-        let x = new convnetjs.Vol(1, 1, OUTPUT_NODE);
-        let y = labels[j];
-        for (let k = 0; k < OUTPUT_NODE; k++){
-            x.set(1, 1, k, xs[j*OUTPUT_NODE+k]/255.0-0.5);
+        let x = new convnetjs.Vol(1, 1, INPUT_NODE);
+        let y = testlabels[j];
+        for (let k = 0; k < INPUT_NODE; k++){
+            x.set(0, 0, k, xs[j*INPUT_NODE+k]);
         }
         net.forward(x);
-        let y_ = net.getPredication();
-        if (y_ === y)
+        let y_ = net.getPrediction();
+        if (y_ === y){
             count++;
+        }
     }
     let acc = count / TEST_SIZE;
     console.log('accuracy: ' + acc.toFixed(3));
@@ -109,5 +113,5 @@ async function main(){
     await train(data);
     statusLog("Finished");
 }
-main();
+document.getElementById("train").onclick=main;
 

@@ -2,19 +2,6 @@
 author: David Xiang
 email: xdw@pku.edu.cn
  */
-const BATCH_SIZE = 64;
-const TRAIN_SIZE = 60000; // one epoch
-const TRAIN_BATCHES = TRAIN_SIZE / BATCH_SIZE;
-const TEST_SIZE = 5000;
-
-const IMAGE_LENGTH = 28;
-const INPUT_NODE = 784;
-const HIDDEN_SIZE = 512;
-const OUTPUT_NODE = 10;
-const NUM_CHANNELS = 1;
-
-const LEARNING_RATE = 0.15;
-
 async function train(data){
     const model = tf.sequential();
     const optimizer = tf.train.sgd(LEARNING_RATE);
@@ -96,4 +83,3 @@ async function main(){
     await init(data);
 }
 main();
-

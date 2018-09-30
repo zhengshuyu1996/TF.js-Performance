@@ -168,6 +168,6 @@ class MnistData {
       batchLabelsArray.set(label, i * NUM_CLASSES);
     }
 
-    return {batchImagesArray, batchLabelsArray};
+    return {xs:batchImagesArray, labels:batchLabelsArray};
   }
 }
