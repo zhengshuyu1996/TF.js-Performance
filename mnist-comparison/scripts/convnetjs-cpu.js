@@ -1,3 +1,4 @@
+
 /*
 author: David Xiang
 email: xdw@pku.edu.cn
@@ -33,7 +34,8 @@ function initNet(){
     trainer = new convnetjs.Trainer(net, {
         learning_rate:LEARNING_RATE,
         method: "sgd",
-        batch_size:BATCH_SIZE
+        batch_size:BATCH_SIZE,
+        momentum: 0.0
     })
 }
 

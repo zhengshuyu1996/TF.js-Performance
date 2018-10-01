@@ -57,6 +57,21 @@ function shuffle(array){
   }
 }
 
+function OneHot2Label(LabelOneHot){
+    // convert onehot format label array to class label array
+    let num = LabelOneHot.length/OUTPUT_NODE;
+    let labels = new Uint8Array(num);
+
+    for (let i = 0; i < num; i++){
+        labels[i] = 0;
+        for (let j = 0; j < OUTPUT_NODE; j++){
+            if (LabelOneHot[i * OUTPUT_NODE + j] == 1)
+                labels[i] = j;
+        }
+    }
+    return labels;
+}
+
 function createShuffledIndices(n){
   const shuffledIndices = new Uint32Array(n);
   for (let i = 0; i < n; ++i) {
