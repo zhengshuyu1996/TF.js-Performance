@@ -1,13 +1,13 @@
 const VERBOSE = true;
 
 const BATCH_SIZE = 64;
-const TRAIN_SIZE = 6000; // 60000
+const TRAIN_SIZE = 60000; // 60000
 const TRAIN_BATCHES = TRAIN_SIZE / BATCH_SIZE;
-const TEST_SIZE = 500; // 5000
+const TEST_SIZE = 5000; // 5000
 
 const IMAGE_LENGTH = 28;
 const INPUT_NODE = 784;
-const HIDDEN_SIZE = 512;
+const HIDDEN_SIZE = 128;
 const OUTPUT_NODE = 10;
 const NUM_CHANNELS = 1;
 

@@ -49,15 +49,6 @@ async function train(data){
             cost: synaptic.Trainer.cost.CROSS_ENTROPY
         });
     }
-
-    /*{let batch = await data.nextTrainBatch(3000);
-    let trainData = getStdInput(batch.xs, batch.labels);
-    trainer.train(trainData,{
-        rate: LEARNING_RATE,
-        iterations: 1,
-        log: 1,
-        cost: synaptic.Trainer.cost.CROSS_ENTROPY
-    });*/
     console.timeEnd("train");
 
     statusLog("Testing");
@@ -94,7 +85,9 @@ async function load(){
 }
 
 async function main(){
+    statusLog("Initializing Network");
     initNet();
+    statusLog("Loading");
     let data = await load();
     await train(data);
     statusLog("Finished");
