@@ -4,13 +4,12 @@
 <html lang="en">
     <head>
         <meta charset='utf-8' />
-        <title>Performance Comparison - Synaptic CPU</title>
+        <title>Performance Comparison - TensorFlow.js CPU</title>
     </head>
     <body>
         <div style="padding-left:5%">
         <h1>JavaScript Deep Learning Library Performance Comparison</h1>
-        <h2>Synaptic CPU</h2>
-        <button id="train">train</button>
+        <h2>TensorFlow.js CPU</h2>
         <br>
 
         <h2 id="status">Status: Loading Data</h2>
@@ -20,10 +19,10 @@
             </p>
         </div>
 
-        <script src="scripts/lib/synaptic/synaptic.js"></script>
-        <script src="scripts/data.js"></script>
+        <script src="../lib/tensorflowjs/tfjs@0.13.0"></script>
+        <script src="scripts/tfjs-data.js"></script>
         <script src="scripts/ui.js"></script>
         <script src="scripts/hyperparams.js"></script>
-        <script src="scripts/synaptic-cpu.js"></script>
+        <script src="scripts/tfjs-cpu.js"></script>
     </body>
 </html>

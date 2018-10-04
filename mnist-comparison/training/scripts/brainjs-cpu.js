@@ -95,5 +95,5 @@ async function main(){
     await train(data);
     statusLog("Finished");
 }
-document.getElementById("train").onclick=main;
+main();
 

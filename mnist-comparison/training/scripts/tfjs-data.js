@@ -27,11 +27,6 @@ const MNIST_IMAGES_SPRITE_PATH =
 const MNIST_LABELS_PATH =
     'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
 
-//const MNIST_IMAGES_SPRITE_PATH =
-    //'../../../data/mnist_images.png';
-//const MNIST_LABELS_PATH =
-    //'../../../data/mnist_labels_uint8';
-
 /**
  * A class that fetches the sprited MNIST dataset and returns shuffled batches.
  *
