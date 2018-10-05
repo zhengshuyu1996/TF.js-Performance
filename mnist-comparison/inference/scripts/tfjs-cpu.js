@@ -22,7 +22,7 @@ async function load(){
     await data.load();
 
     // load models
-    model = await tf.loadModel(LOCAL_SERVER+"/model/mymodel.json");
+    model = await tf.loadModel(LOCAL_SERVER+"/model/tfjs/mymodel.json");
 
     // warm up the model
     for (let i = 1; i < 10; i++)
