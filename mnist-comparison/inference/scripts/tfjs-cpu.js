@@ -2,6 +2,7 @@
 author: David Xiang
 email: xdw@pku.edu.cn
  */
+'use strict'
 let model;
 tf.setBackend("cpu");
 async function infer(data){
