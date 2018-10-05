@@ -11,6 +11,12 @@ function initNet(){
     let json = JSON.parse(savedModel); // creates json object out of a string
     net = new convnetjs.Net(); // create an empty network
     net.fromJSON(json); // load all parameters from JSON
+
+    // warm up the net
+    for (let i = 0; i < 10; i++){
+        let x = new convnetjs.Vol(1, 1, INPUT_NODE);
+        net.forward(x);
+    }
 }
 
 function getLabel(LabelOneHot){
