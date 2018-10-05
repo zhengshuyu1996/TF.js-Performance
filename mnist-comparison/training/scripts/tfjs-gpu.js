@@ -63,6 +63,8 @@ async function train(data){
 
     let acc = history.history.acc[0];
     console.log('accuracy: ' + acc.toFixed(3));
+    //console.log("Saving Model...")
+    //model.save("downloads://mymodel")
 }
 
 async function load(){

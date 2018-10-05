@@ -7,7 +7,7 @@ var net;
 
 function initNet(){
     // constuct the net
-    net = new brain.NeuralNetworkGPU({
+    net = new brain.NeuralNetwork({
         hiddenLayers: [512, 512],
         // if assign relu to activation, then the training process 
         // can not converge. Why?
@@ -44,13 +44,15 @@ async function train(data){
         net.train(trainData, {
             iterations: 1,
             learningRate: LEARNING_RATE,
-            momentum: 0.0001,
+            momentum: 0.000001, // if we set 0, the library will generate warning
             log: VERBOSE, // false => only time are printed in console
             logPeriod: 1
         });
     }
     console.timeEnd("train");
 
+
+    // test procedure
     statusLog("Testing");
     let batch = await data.nextTestBatch(TEST_SIZE);
     let testData = getStdInput(batch.xs, batch.labels);
@@ -60,6 +62,7 @@ async function train(data){
     for (let j = 0; j < TEST_SIZE; j++){
         let y = labels[j]; // correct label
 
+        // reduce: get max value's key
         let output = net.run(testData[j].input);
         let max = output[0];
         let y_ = 0;
@@ -69,6 +72,8 @@ async function train(data){
                 y_ = k;
             }
         }
+
+        // count the correct prediction
         if (y_ === y){
             count++;
         }
@@ -91,3 +96,4 @@ async function main(){
     statusLog("Finished");
 }
 main();
+
