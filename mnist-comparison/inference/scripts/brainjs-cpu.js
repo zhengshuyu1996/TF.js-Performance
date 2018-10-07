@@ -51,7 +51,6 @@ async function train(data){
     }
     console.timeEnd("train");
 
-
     // test procedure
     statusLog("Testing");
     let batch = await data.nextTestBatch(TEST_SIZE);
@@ -80,6 +79,9 @@ async function train(data){
     }
     let acc = count / TEST_SIZE;
     console.log('accuracy: ' + acc.toFixed(3));
+
+    const json = net.toJSON();
+    console.log(JSON.stringify(json));
 }
 
 async function load(){

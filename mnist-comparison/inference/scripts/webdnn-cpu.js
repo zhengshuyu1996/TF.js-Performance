@@ -36,7 +36,7 @@ async function load(){
     // load models using webdnn's runner api
     // https://mil-tokyo.github.io/webdnn/docs/tutorial/keras.html
     model = await WebDNN.load(LOCAL_SERVER + "/model/webdnn",
-        {backendOrder:['webgl']});
+        {backendOrder:['webassembly']});
     console.log(model.backendName);
     
     // get input variable reference
