@@ -6,13 +6,20 @@ email: xdw@pku.edu.cn
 var net;
 
 function initNet(){
+    let json = JSON.parse(savedModel);
+
     // constuct the net
-    net = new brain.NeuralNetworkGPU({
-        hiddenLayers: [512, 512],
-        // if assign relu to activation, then the training process 
-        // can not converge. Why?
-        // activation: "relu"
-    });
+    net = new brain.NeuralNetworkGPU();
+    net.fromJSON(json);
+
+    // warm up the net
+    let arr = new Array(INPUT_NODE);
+    let testInput = {
+        input: arr
+    }
+    for (let i = 0; i < 10; i++){
+        net.run(testInput);
+    }
 }
 
 function getStdInput(xs, labels){
@@ -32,49 +39,19 @@ function getStdInput(xs, labels){
     return data;
 }
 
-async function train(data){
-    statusLog("Training");
+async function infer(data){
+    statusLog("Inferring");
 
-    console.time("train");
-
-    for (let i = 0; i < TRAIN_BATCHES; i++){
-        let batch = await data.nextTrainBatch(BATCH_SIZE);
-        let trainData = getStdInput(batch.xs, batch.labels);
-
-        net.train(trainData, {
-            iterations: 1,
-            learningRate: LEARNING_RATE,
-            momentum: 0.0001,
-            log: VERBOSE, // false => only time are printed in console
-            logPeriod: 1
-        });
-    }
-    console.timeEnd("train");
-
-    statusLog("Testing");
+    console.time("inference");
+    
     let batch = await data.nextTestBatch(TEST_SIZE);
-    let testData = getStdInput(batch.xs, batch.labels);
+    let TestData = getStdInput(batch.xs, batch.labels);
 
-    let labels = OneHot2Label(batch.labels);
-    let count = 0;
-    for (let j = 0; j < TEST_SIZE; j++){
-        let y = labels[j]; // correct label
-
-        let output = net.run(testData[j].input);
-        let max = output[0];
-        let y_ = 0;
-        for (let k = 0; k < OUTPUT_NODE; k++){
-            if (output[k] > max){
-                max = output[k];
-                y_ = k;
-            }
-        }
-        if (y_ === y){
-            count++;
-        }
+    for (let item in TestData){
+        net.run(item);
     }
-    let acc = count / TEST_SIZE;
-    console.log('accuracy: ' + acc.toFixed(3));
+
+    console.timeEnd("inference");
 }
 
 async function load(){
@@ -87,7 +64,8 @@ async function load(){
 async function main(){
     initNet();
     let data = await load();
-    await train(data);
+    await infer(data);
     statusLog("Finished");
 }
 main();
+

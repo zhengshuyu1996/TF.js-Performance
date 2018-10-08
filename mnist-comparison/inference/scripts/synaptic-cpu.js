@@ -3,23 +3,22 @@ author: David Xiang
 email: xdw@pku.edu.cn
  */
 'use strict'
-var net, trainer;
+var net;
 
 function initNet(){
+    let json = JSON.parse(savedModel);
+
     // constuct the net
-    let inputLayer = new synaptic.Layer(INPUT_NODE);
-    let hiddenLayer1 = new synaptic.Layer(HIDDEN_SIZE);
-    let hiddenLayer2 = new synaptic.Layer(HIDDEN_SIZE);
-    let outputLayer = new synaptic.Layer(OUTPUT_NODE);
-    inputLayer.project(hiddenLayer1);
-    hiddenLayer1.project(hiddenLayer2);
-    hiddenLayer2.project(outputLayer);
-    net = new synaptic.Network({
-        input: inputLayer,
-        hidden: [hiddenLayer1, hiddenLayer2],
-        output: outputLayer
-    })
-    trainer = new synaptic.Trainer(net);
+    net = synaptic.Network.fromJSON(json);
+
+    // warm up the net
+    let arr = new Array(INPUT_NODE);
+    let testInput = {
+        input: arr
+    }
+    for (let i = 0; i < 10; i++){
+        net.activate(testInput);
+    }
 }
 
 function getStdInput(xs, labels){
@@ -34,47 +33,20 @@ function getStdInput(xs, labels){
 }
 
 async function train(data){
-    statusLog("Training");
+    statusLog("Inferring");
 
-    console.time("train");
-
-    for (let i = 0; i < TRAIN_BATCHES; i++){
-        let batch = await data.nextTrainBatch(BATCH_SIZE);
-        let trainData = getStdInput(batch.xs, batch.labels);
-
-        trainer.train(trainData,{
-            rate: LEARNING_RATE,
-            iterations: 1,
-            log: 1,
-            cost: synaptic.Trainer.cost.CROSS_ENTROPY
-        });
-    }
-    console.timeEnd("train");
-
-    statusLog("Testing");
+    console.time("inference");
+    
     let batch = await data.nextTestBatch(TEST_SIZE);
-    let testData = getStdInput(batch.xs, batch.labels);
+    let TestData = getStdInput(batch.xs, batch.labels);
 
-    let labels = OneHot2Label(batch.labels);
-    let count = 0;
-    for (let j = 0; j < TEST_SIZE; j++){
-        let y = labels[j]; // correct label
-
-        let output = net.activate(testData[j].input);
-        let max = output[0];
-        let y_ = 0;
-        for (let k = 0; k < OUTPUT_NODE; k++){
-            if (output[k] > max){
-                max = output[k];
-                y_ = k;
-            }
-        }
-        if (y_ === y){
-            count++;
-        }
+    let i = 0;
+    for (let item in TestData){
+        //console.log(i++);
+        net.activate(item);
     }
-    let acc = count / TEST_SIZE;
-    console.log('accuracy: ' + acc.toFixed(3));
+
+    console.timeEnd("inference");
 }
 
 async function load(){
