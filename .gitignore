@@ -1,9 +1,9 @@
 mnist-data
 .DS_Store
-mnist-lenet5-tf/.*
-mnist-lenet5-tf/bin
-mnist-lenet5-tf/include
-mnist-lenet5-tf/lib
-mnist-lenet5-tf/pip-selfcheck.json
+mnist-training/mnist-lenet5-tf/.*
+mnist-training/mnist-lenet5-tf/bin
+mnist-training/mnist-lenet5-tf/include
+mnist-training/mnist-lenet5-tf/lib
+mnist-training/mnist-lenet5-tf/pip-selfcheck.json
 mnist-comparison/data
 mnist-comparison/model
