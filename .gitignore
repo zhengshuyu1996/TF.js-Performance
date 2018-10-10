@@ -7,3 +7,5 @@ mnist-training/mnist-lenet5-tf/lib
 mnist-training/mnist-lenet5-tf/pip-selfcheck.json
 mnist-comparison/data
 mnist-comparison/model
+inference-comparison/model
+inference-comparison/data
