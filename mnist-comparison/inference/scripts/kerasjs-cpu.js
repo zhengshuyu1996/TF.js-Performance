@@ -26,7 +26,7 @@ async function load(){
 
     // load models
     model = new KerasJS.Model({
-        filepath: LOCAL_SERVER+"/model/kerasjs/kerasjs.bin",
+        filepath: LOCAL_SERVER+"/model/kerasjs/model.bin",
         gpu: true
     });
 
