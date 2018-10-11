@@ -3,9 +3,10 @@ author: David Xiang
 email: xdw@pku.edu.cn
  */
 'use strict'
-var net;
+let net;
+const TASK = "Inferrence\tbrainjs\tcpu\t";
 
-function initNet(){
+async function initModel(){
     let json = JSON.parse(savedModel);
 
     // constuct the net
@@ -40,31 +41,43 @@ function getStdInput(xs, labels){
 }
 
 async function infer(data){
+    triggerStart();
     statusLog("Inferring");
 
-    console.time("inference");
+    let totTime = 0;
     
     let batch = await data.nextTestBatch(TEST_SIZE);
     let TestData = getStdInput(batch.xs, batch.labels);
 
+    let i = 0;
     for (let item in TestData){
-        //console.log("running");
+        if (VERBOSE)
+            console.log("Case " + i++);
+
+        let begin = new Date();
+
         net.run(item);
+
+        let end = new Date();
+        totTime += end - begin;
     }
 
-    console.timeEnd("inference");
+    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
 }
 
-async function load(){
+async function init(){
+    registerListener();
+    await initModel();
+
     let data = new MnistData();
     await data.load();
+
     statusLog("Ready");
     return data;
 }
 
 async function main(){
-    initNet();
-    let data = await load();
+    let data = await init();
     await infer(data);
     statusLog("Finished");
 }

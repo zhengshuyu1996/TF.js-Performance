@@ -1,7 +1,7 @@
 const BATCH_SIZE = 64;
-const TRAIN_SIZE = 200; // 60000
+const TRAIN_SIZE = 500; // 60000
 const TRAIN_BATCHES = TRAIN_SIZE / BATCH_SIZE;
-const TEST_SIZE = 200; // 5000
+const TEST_SIZE = 500; // 5000
 
 const IMAGE_LENGTH = 28;
 const INPUT_NODE = 784;

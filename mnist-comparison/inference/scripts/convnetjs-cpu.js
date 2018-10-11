@@ -4,9 +4,10 @@ author: David Xiang
 email: xdw@pku.edu.cn
  */
 'use strict'
-var net;
+let net;
+const TASK = "Inference\tconvnetjs\tcpu\t";
 
-function initNet(){
+function initModel(){
     // later, to recreate the network:
     let json = JSON.parse(savedModel); // creates json object out of a string
     net = new convnetjs.Net(); // create an empty network
@@ -33,34 +34,45 @@ function getLabel(LabelOneHot){
     return labels;
 }
 async function infer(data){
+    triggerStart();
     statusLog("Inferring");
 
-    console.time("inference");
+    let totTime = 0;
 
     let batch = await data.nextTestBatch(TEST_SIZE);
     let xs = batch.xs;  
     for (let i = 0; i < batch.labels.length/OUTPUT_NODE; i++){
+        if (VERBOSE)
+            console.log("Case " + i);
+
+        let begin = new Date();
+
         let x = new convnetjs.Vol(1, 1, INPUT_NODE);
         for (let j = 0; j < INPUT_NODE; j++){
             x.set(0, 0, j, xs[i*INPUT_NODE+j]);
         }
         net.forward(x);
-        //console.log(i);
+        
+        let end = new Date();
+        totTime += end - begin;
     }
 
-    console.timeEnd("inference");
+    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
 }
 
-async function load(){
+async function init(){
+    registerListener();
+    initModel();
+
     let data = new MnistData();
     await data.load();
+
     statusLog("Ready");
     return data;
 }
 
 async function main(){
-    initNet();
-    let data = await load();
+    let data = await init();
     await infer(data);
     statusLog("Finished");
 }

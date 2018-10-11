@@ -4,12 +4,13 @@ email: xdw@pku.edu.cn
  */
 'use strict'
 var net;
+const TASK = "Inference\tsynaptic\tcpu\t";
 
-function initNet(){
+async function initModel(){
     let json = JSON.parse(savedModel);
 
     // constuct the net
-    net = synaptic.Network.fromJSON(json);
+    net = await synaptic.Network.fromJSON(json);
 
     // warm up the net
     let arr = new Array(INPUT_NODE);
@@ -32,36 +33,45 @@ function getStdInput(xs, labels){
     return data;
 }
 
-async function train(data){
+async function infer(data){
+    triggerStart();
     statusLog("Inferring");
 
-    console.time("inference");
+    let totTime = 0;
     
     let batch = await data.nextTestBatch(TEST_SIZE);
     let TestData = getStdInput(batch.xs, batch.labels);
 
     let i = 0;
     for (let item in TestData){
-        //console.log(i++);
+        console.log("Case "+i++);
+
+        let begin = new Date();
         net.activate(item);
+        let end = new Date();
+        totTime += end - begin;
     }
 
-    console.timeEnd("inference");
+    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
 }
 
-async function load(){
+async function init(){
+    registerListener();
+    await initModel();
+
     let data = new MnistData();
     await data.load();
+    
     statusLog("Ready");
     return data;
 }
 
 async function main(){
-    statusLog("Initializing Network");
-    initNet();
-    statusLog("Loading");
-    let data = await load();
-    await train(data);
+    statusLog("Initializing");
+
+    let data = await init();
+
+    await infer(data);
     statusLog("Finished");
 }
 main();

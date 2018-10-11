@@ -4,30 +4,13 @@ email: xdw@pku.edu.cn
  */
 'use strict'
 let model;
+const TASK = "Inference\tkerasjs\tcpu\t";
 
-async function infer(data){
-    statusLog("Inferring");
-
-    console.time("inference");
-    let batch = data.nextTestBatch(TEST_SIZE);
-    for (let i = 0; i < batch.labels.length/OUTPUT_NODE; i++){
-        let input = {
-            input: batch.xs.slice(i * INPUT_NODE, (i + 1) * INPUT_NODE)
-        }
-        model.predict(input);
-        //console.log(i);
-    }
-    console.timeEnd("inference");
-}
-
-async function load(){
-    let data = new MnistData();
-    await data.load();
-
+async function initModel(){
     // load models
     model = new KerasJS.Model({
         filepath: LOCAL_SERVER+"/model/kerasjs/model.bin",
-        gpu: true
+        gpu: false
     });
 
     // wait until model is ready
@@ -38,18 +21,47 @@ async function load(){
     let testInput = new Float32Array(INPUT_NODE);
     for (let i = 1; i < 10; i++)
         model.predict({input: testInput});
+}
+
+async function infer(data){
+    triggerStart();
+    statusLog("Inferring");
+
+    let totTime = 0;
+    let batch = data.nextTestBatch(TEST_SIZE);
+    for (let i = 0; i < batch.labels.length/OUTPUT_NODE; i++){
+        let input = {
+            input: batch.xs.slice(i * INPUT_NODE, (i + 1) * INPUT_NODE)
+        }
+
+        if (VERBOSE)
+            console.log("Case " + i);
+
+        let begin = new Date();
+
+        model.predict(input);
+        
+        let end = new Date();
+        totTime += end - begin;
+    }
+    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
+}
+
+async function init(){
+    registerListener();
+    await initModel();
+
+    let data = new MnistData();
+    await data.load();
     
     statusLog("Ready");
     return data;
 }
 
-async function init(data){
+async function main(){
+    let data = await init();
     await infer(data);
     statusLog("Finished");
-}
-async function main(){
-    let data = await load();
-    await init(data);
 }
 main();
 
