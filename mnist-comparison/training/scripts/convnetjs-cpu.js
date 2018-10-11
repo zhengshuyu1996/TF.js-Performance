@@ -5,6 +5,7 @@ email: xdw@pku.edu.cn
  */
 'use strict'
 var net, trainer;
+const TASK = "Training\tconvnetjs\tcpu\t";
 
 function initNet(){
     // constuct the net
@@ -53,9 +54,10 @@ function getLabel(LabelOneHot){
     return labels;
 }
 async function train(data){
+    triggerStart();
     statusLog("Training");
 
-    console.time("train");
+    let totTime = 0;
 
     for (let i = 0; i < TRAIN_BATCHES; i++){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
@@ -63,14 +65,22 @@ async function train(data){
         let labelsOneHot = batch.labels;
         let labels = getLabel(labelsOneHot);
         
-        let loss = 0;
+        if (VERBOSE)
+                console.log(i)
+        
         for (let j = 0; j < BATCH_SIZE; j++){
             let x = new convnetjs.Vol(1, 1, INPUT_NODE);
             let y = labels[j];
             for (let k = 0; k < INPUT_NODE; k++){
                 x.set(0, 0, k, xs[j*INPUT_NODE+k]);
             }
+
+            let begin = new Date();
+
             let stats = trainer.train(x, y);
+
+            let end = new Date();
+            totTime += end - begin;
             //loss += stats.loss;
             //loss value is incompatible with tfjs?
             //if (j == BATCH_SIZE - 1){
@@ -78,40 +88,46 @@ async function train(data){
             //}
         }
     }
-    console.timeEnd("train");
 
-    statusLog("Testing");
-    let testData = await data.nextTestBatch(TEST_SIZE);
-    let xs = testData.xs;
-    let testlabelsOneHot = testData.labels;
-    let testlabels = getLabel(testlabelsOneHot);
-    let count = 0;
-    for (let j = 0; j < TEST_SIZE; j++){
-        let x = new convnetjs.Vol(1, 1, INPUT_NODE);
-        let y = testlabels[j];
-        for (let k = 0; k < INPUT_NODE; k++){
-            x.set(0, 0, k, xs[j*INPUT_NODE+k]);
+    if (DO_TEST){
+        statusLog("Testing");
+        let testData = await data.nextTestBatch(TEST_SIZE);
+        let xs = testData.xs;
+        let testlabelsOneHot = testData.labels;
+        let testlabels = getLabel(testlabelsOneHot);
+        let count = 0;
+        for (let j = 0; j < TEST_SIZE; j++){
+            let x = new convnetjs.Vol(1, 1, INPUT_NODE);
+            let y = testlabels[j];
+            for (let k = 0; k < INPUT_NODE; k++){
+                x.set(0, 0, k, xs[j*INPUT_NODE+k]);
+            }
+            net.forward(x);
+            let y_ = net.getPrediction();
+            if (y_ === y){
+                count++;
+            }
         }
-        net.forward(x);
-        let y_ = net.getPrediction();
-        if (y_ === y){
-            count++;
-        }
+        let acc = count / TEST_SIZE;
+        console.log('accuracy: ' + acc.toFixed(3));
     }
-    let acc = count / TEST_SIZE;
-    console.log('accuracy: ' + acc.toFixed(3));
+
+    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
 }
 
-async function load(){
+async function init(){
+    initNet();
+    registerListener();
+
     let data = new MnistData();
     await data.load();
+    
     statusLog("Ready");
     return data;
 }
 
 async function main(){
-    initNet();
-    let data = await load();
+    let data = await init();
     await train(data);
     statusLog("Finished");
 }

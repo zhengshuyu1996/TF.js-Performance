@@ -4,6 +4,7 @@ email: xdw@pku.edu.cn
  */
 'use strict'
 var net;
+const TASK = "Training\tbrainjs\tgpu\t";
 
 function initNet(){
     // constuct the net
@@ -33,13 +34,19 @@ function getStdInput(xs, labels){
 }
 
 async function train(data){
+    triggerStart();
     statusLog("Training");
 
-    console.time("train");
+    let totTime = 0;
 
     for (let i = 0; i < TRAIN_BATCHES; i++){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
         let trainData = getStdInput(batch.xs, batch.labels);
+
+        if (VERBOSE)
+            console.log(i);
+
+        let begin = new Date();
 
         net.train(trainData, {
             iterations: 1,
@@ -48,45 +55,58 @@ async function train(data){
             log: VERBOSE, // false => only time are printed in console
             logPeriod: 1
         });
+
+        let end = new Date();
+        totTime += end - begin;
     }
-    console.timeEnd("train");
 
-    statusLog("Testing");
-    let batch = await data.nextTestBatch(TEST_SIZE);
-    let testData = getStdInput(batch.xs, batch.labels);
+    if(DO_TEST){
+        // test procedure
+        statusLog("Testing");
+        let batch = await data.nextTestBatch(TEST_SIZE);
+        let testData = getStdInput(batch.xs, batch.labels);
 
-    let labels = OneHot2Label(batch.labels);
-    let count = 0;
-    for (let j = 0; j < TEST_SIZE; j++){
-        let y = labels[j]; // correct label
+        let labels = OneHot2Label(batch.labels);
+        let count = 0;
+        for (let j = 0; j < TEST_SIZE; j++){
+            let y = labels[j]; // correct label
 
-        let output = net.run(testData[j].input);
-        let max = output[0];
-        let y_ = 0;
-        for (let k = 0; k < OUTPUT_NODE; k++){
-            if (output[k] > max){
-                max = output[k];
-                y_ = k;
+            // reduce: get max value's key
+            let output = net.run(testData[j].input);
+            let max = output[0];
+            let y_ = 0;
+            for (let k = 0; k < OUTPUT_NODE; k++){
+                if (output[k] > max){
+                    max = output[k];
+                    y_ = k;
+                }
+            }
+
+            // count the correct prediction
+            if (y_ === y){
+                count++;
             }
         }
-        if (y_ === y){
-            count++;
-        }
+        let acc = count / TEST_SIZE;
+        console.log('accuracy: ' + acc.toFixed(3));
     }
-    let acc = count / TEST_SIZE;
-    console.log('accuracy: ' + acc.toFixed(3));
+
+    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
 }
 
-async function load(){
+async function init(){
+    initNet();
+    registerListener();
+
     let data = new MnistData();
     await data.load();
+
     statusLog("Ready");
     return data;
 }
 
 async function main(){
-    initNet();
-    let data = await load();
+    let data = await init();
     await train(data);
     statusLog("Finished");
 }

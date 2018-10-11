@@ -47,6 +47,7 @@ async function train(data){
             console.log(i);
 
         let begin = new Date();
+
         net.train(trainData, {
             iterations: 1,
             learningRate: LEARNING_RATE,
@@ -54,6 +55,7 @@ async function train(data){
             log: VERBOSE, // false => only time are printed in console
             logPeriod: 1
         });
+        
         let end = new Date();
         totTime += end - begin;
     }

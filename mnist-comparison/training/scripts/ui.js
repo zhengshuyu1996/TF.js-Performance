@@ -30,6 +30,7 @@ function triggerStart(){
         type: "started",
         message: null
     });
+    console.log("start");
     document.dispatchEvent(event);
 }
 
@@ -38,5 +39,6 @@ function triggerEnd(msg){
         type: "finished",
         message: msg
     });
+    console.log(msg);
     document.dispatchEvent(event);
 }

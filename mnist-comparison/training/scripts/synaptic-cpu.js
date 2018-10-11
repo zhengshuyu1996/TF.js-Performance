@@ -4,6 +4,7 @@ email: xdw@pku.edu.cn
  */
 'use strict'
 var net, trainer;
+const TASK = "Training\tsynaptic\tcpu\t"
 
 function initNet(){
     // constuct the net
@@ -34,13 +35,19 @@ function getStdInput(xs, labels){
 }
 
 async function train(data){
+    triggerStart();
     statusLog("Training");
 
-    console.time("train");
+    let totTime = 0;
 
     for (let i = 0; i < TRAIN_BATCHES; i++){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
         let trainData = getStdInput(batch.xs, batch.labels);
+
+        if (VERBOSE)
+            console.log(i);
+
+        let begin = new Date();
 
         trainer.train(trainData,{
             rate: LEARNING_RATE,
@@ -48,47 +55,55 @@ async function train(data){
             log: 1,
             cost: synaptic.Trainer.cost.CROSS_ENTROPY
         });
+
+        let end = new Date();
+        totTime += end - begin;
     }
-    console.timeEnd("train");
 
-    statusLog("Testing");
-    let batch = await data.nextTestBatch(TEST_SIZE);
-    let testData = getStdInput(batch.xs, batch.labels);
+    if (DO_TEST){
+        statusLog("Testing");
+        let batch = await data.nextTestBatch(TEST_SIZE);
+        let testData = getStdInput(batch.xs, batch.labels);
 
-    let labels = OneHot2Label(batch.labels);
-    let count = 0;
-    for (let j = 0; j < TEST_SIZE; j++){
-        let y = labels[j]; // correct label
+        let labels = OneHot2Label(batch.labels);
+        let count = 0;
+        for (let j = 0; j < TEST_SIZE; j++){
+            let y = labels[j]; // correct label
 
-        let output = net.activate(testData[j].input);
-        let max = output[0];
-        let y_ = 0;
-        for (let k = 0; k < OUTPUT_NODE; k++){
-            if (output[k] > max){
-                max = output[k];
-                y_ = k;
+            let output = net.activate(testData[j].input);
+            let max = output[0];
+            let y_ = 0;
+            for (let k = 0; k < OUTPUT_NODE; k++){
+                if (output[k] > max){
+                    max = output[k];
+                    y_ = k;
+                }
+            }
+            if (y_ === y){
+                count++;
             }
         }
-        if (y_ === y){
-            count++;
-        }
+        let acc = count / TEST_SIZE;
+        console.log('accuracy: ' + acc.toFixed(3));
     }
-    let acc = count / TEST_SIZE;
-    console.log('accuracy: ' + acc.toFixed(3));
+    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
 }
 
-async function load(){
+async function init(){
+    initNet();
+    registerListener();
+
     let data = new MnistData();
     await data.load();
+
     statusLog("Ready");
     return data;
 }
 
 async function main(){
-    statusLog("Initializing Network");
-    initNet();
-    statusLog("Loading");
-    let data = await load();
+    statusLog("Initializing");
+    let data = await init();
+    
     await train(data);
     statusLog("Finished");
 }
