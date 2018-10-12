@@ -4,12 +4,12 @@
 <html lang="en">
     <head>
         <meta charset='utf-8' />
-        <title>Performance Comparison - TensorFlow.js GPU</title>
+        <title>Performance Comparison - TensorFlow.js CPU</title>
     </head>
     <body>
         <div style="padding-left:5%">
             <h1>JavaScript Deep Learning Library Performance Comparison</h1>
-            <h2>TensorFlow.js GPU Inference on ResNet50 Model</h2>
+            <h2>TensorFlow.js CPU Inference on VGG19 Model</h2>
             <br>
 
             <h2 id="status">Status: Loading Data</h2>
@@ -27,8 +27,8 @@
 
         <script src="lib/tensorflowjs/tfjs@0.13.0.js"></script>
         <script src="scripts/hyperparams.js"></script>
-        <script src="scripts/data-res50.js"></script>
+        <script src="scripts/data-224.js"></script>
         <script src="scripts/ui.js"></script>
-        <script src="scripts/tfjs-gpu-res50.js"></script>
+        <script src="scripts/tfjs-vgg19-cpu.js"></script>
     </body>
 </html>

@@ -4,7 +4,7 @@ email: xdw@pku.edu.cn
  */
 'use strict'
 let model;
-const TASK = "VGG19\ttfjs\tgpu\t"
+const TASK = "Tfjs\tres50\tgpu\t";
 async function initData(){
     let offset = tf.scalar(127.5);
     let data = [];
@@ -27,13 +27,13 @@ async function initModel(){
 
     // load model
     console.log("loading model");
-    statusLog("Loading Model")
-    model = await tf.loadModel(LOCAL_SERVER+"/model/tfjs/vgg19/model.json");
+    statusLog("Loading Model");
+    model = await tf.loadModel(LOCAL_SERVER+"/model/tfjs/resnet50/model.json");
 
     // warm up the model
     console.log("warmup");
     statusLog("Warming up");
-    for (let i = 1; i < 3; i++){
+    for (let i = 0; i < 3; i++){
         console.time("warmup");
         model.predict(tf.zeros([1, 224, 224, 3])).dispose();
         console.timeEnd("warmup");
