@@ -89,7 +89,7 @@ async function init(){
     tf.setBackend("webgl");
     console.log(tf.getBackend());
     await initNet();
-    registerListener();
+    //registerListener();
 
     let data = new MnistData();
     await data.load();
