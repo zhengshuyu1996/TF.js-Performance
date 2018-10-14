@@ -89,7 +89,6 @@ async function init(){
     tf.setBackend("cpu");
     console.log(tf.getBackend());
     initNet();
-    registerListener();
 
     let data = new MnistData();
     await data.load();

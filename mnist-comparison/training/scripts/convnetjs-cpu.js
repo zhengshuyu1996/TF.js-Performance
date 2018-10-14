@@ -117,8 +117,7 @@ async function train(data){
 
 async function init(){
     initNet();
-    registerListener();
-
+    
     let data = new MnistData();
     await data.load();
     

@@ -61,7 +61,6 @@ async function infer(data){
 }
 
 async function init(){
-    registerListener();
     initModel();
 
     let data = new MnistData();
