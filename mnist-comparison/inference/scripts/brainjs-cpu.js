@@ -41,7 +41,7 @@ function getStdInput(xs, labels){
 }
 
 async function infer(data){
-    triggerStart();
+    await triggerStart();
     statusLog("Inferring");
 
     let totTime = 0;
@@ -62,7 +62,7 @@ async function infer(data){
         totTime += end - begin;
     }
 
-    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
+    triggerEnd(TASK + totTime + "ms\t");
 }
 
 async function init(){

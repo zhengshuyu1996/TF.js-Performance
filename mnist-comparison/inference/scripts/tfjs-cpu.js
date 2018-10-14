@@ -18,7 +18,7 @@ async function initModel(){
 }
 
 async function infer(data){
-    triggerStart();
+    await triggerStart();
     statusLog("Inferring");
 
     let totTime = 0;
@@ -35,7 +35,7 @@ async function infer(data){
         let end = new Date();
         totTime += end - begin;
     }
-    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
+    triggerEnd(TASK + totTime + "ms\t");
 }
 
 async function init(){

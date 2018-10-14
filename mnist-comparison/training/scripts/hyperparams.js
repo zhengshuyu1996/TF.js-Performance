@@ -1,5 +1,5 @@
 const BATCH_SIZE = 64;
-const TRAIN_SIZE = 500; // 60000
+const TRAIN_SIZE = 6000; // 60000
 const TRAIN_BATCHES = TRAIN_SIZE / BATCH_SIZE;
 const TEST_SIZE = 500; // 5000
 
@@ -13,5 +13,5 @@ const LEARNING_RATE = 0.15;
 
 const LOCAL_SERVER = "http://localhost:8000";
 
-const VERBOSE = true;
+const VERBOSE = false;
 const DO_TEST = false;

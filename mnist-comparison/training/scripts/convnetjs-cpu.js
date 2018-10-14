@@ -54,7 +54,7 @@ function getLabel(LabelOneHot){
     return labels;
 }
 async function train(data){
-    triggerStart();
+    await triggerStart();
     statusLog("Training");
 
     let totTime = 0;
@@ -112,7 +112,7 @@ async function train(data){
         console.log('accuracy: ' + acc.toFixed(3));
     }
 
-    triggerEnd(TASK + "time:\t" + totTime + "ms\t");
+    triggerEnd(TASK + totTime + "ms\t");
 }
 
 async function init(){
