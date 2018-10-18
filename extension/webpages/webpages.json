@@ -1,12 +1,7 @@
 [
-    "",
-    "http://localhost:8000/inference/tfjs-cpu.html",
-    "http://localhost:8000/inference/tfjs-gpu.html",
-    "http://localhost:8000/inference/kerasjs-cpu.html",
-    "http://localhost:8000/inference/kerasjs-gpu.html",
-    "http://localhost:8000/inference/webdnn-cpu.html",
-    "http://localhost:8000/inference/webdnn-gpu.html",
-    "http://localhost:8000/inference/convnetjs-cpu.html",
-    "http://localhost:8000/inference/brainjs-cpu.html",
-    "http://localhost:8000/inference/synapticjs-cpu.html"
+    "http://localhost:8000/training/tfjs-cpu.html",
+    "http://localhost:8000/training/tfjs-gpu.html",
+    "http://localhost:8000/training/brainjs-cpu.html",
+    "http://localhost:8000/training/convnetjs-cpu.html",
+    "http://localhost:8000/training/synaptic-cpu.html"
 ]

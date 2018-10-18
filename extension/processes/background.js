@@ -8,8 +8,8 @@
 const defaultSettings = {
   uploadServer: "localhost:8001",
   webpageServer: "localhost:8001",
-  firstId: 1, lastId: 10,
-  timeout: 600000
+  firstId: 0, lastId: 20,
+  timeout: 600000,
 };
 
 chrome.runtime.onInstalled.addListener((details) => {
@@ -95,60 +95,57 @@ class Recording{
     this._tab = tab;
   }
 
-  static _startMonitoringProcess(tab){
-    if (Recording.count === void 0){
-      Recording.count = 0;
-      Recording.usages = [];
-      Recording.listeningToProcesses = (processes) => {
-        processes = Object.values(processes);
-        processes = processes.filter((process) => {
-          return process.type !== "extension";
-        });
-        Recording.usages.push(processes);
-      };
-    }
-
-    if (Recording.count === 0){
-      chrome.processes.onUpdatedWithMemory.addListener(Recording.listeningToProcesses);
-    }
-    ++Recording.count;
-  }
-
-  static _stopMonitoringProcess(tab){
-    if (Recording.count === void 0 || Recording.count === 0)
-      throw new Error("error");
-
-    --Recording.count;
-    if (Recording.count === 0){
-      chrome.processes.onUpdatedWithMemory.removeListener(Recording.listeningToProcesses);
-    }
-    return Recording.usages;
-  }
-
   start(){
-    Recording._startMonitoringProcess();
-  }
-
-  stop(){
-    Recording._stopMonitoringProcess();
-    return Recording.usages.map((processes) => {
-      return processes.filter((process) => {
+    this.title = "";
+    this.uploadPs = [];
+    this.usages = [];
+    this.listeningToProcesses = (processes) => {
+      processes = Object.values(processes);
+      processes = processes.filter((process) => {
+        if (process.type === "extension")
+          return false;
         const task = process.tasks[0];
         if (task.tabId !== void 0 && task.tabId !== this._tab.id)
           return false;
         return true;
       });
+      //this.usages.push(processes);
+      this.uploadPs.push(this.upload(processes));
+    };
+
+    chrome.processes.onUpdatedWithMemory.addListener(this.listeningToProcesses);
+  }
+
+  async stop(){
+    chrome.processes.onUpdatedWithMemory.removeListener(this.listeningToProcesses);
+    await Promise.all(this.uploadPs);
+    this.uploadPs.length = 0;
+  }
+
+  async upload(processes){
+    const title = this._title;
+    const usage = JSON.stringify(processes);
+
+    const {uploadServer} = await getSettings(["uploadServer"]);
+    const url = `http://${uploadServer}/uploadUsage?id=${title}`;
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    return await new Promise((resolve, reject) => {
+      xhr.onreadystatechange = () => {
+        resolve();
+      };
+      xhr.send(`usage=${usage}`);
     });
   }
 }
 
-async function sendResultToServer(result){
+async function uploadMessage(result){
   const title = result.title;
-  const usage = JSON.stringify(result.usage);
   const message = result.message;
 
   const {uploadServer} = await getSettings(["uploadServer"]);
-  const url = `http://${uploadServer}/upload?id=${title}`;
+  const url = `http://${uploadServer}/uploadMessage?id=${title}`;
   const xhr = new XMLHttpRequest();
   xhr.open("POST", url);
   xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -156,7 +153,7 @@ async function sendResultToServer(result){
     xhr.onreadystatechange = () => {
       resolve();
     };
-    xhr.send(`usage=${usage}&message=${message}`);
+    xhr.send(`message=${message}`);
   });
 }
 
@@ -169,28 +166,27 @@ async function main(){
   for (let i = firstId; i <= lastId; ++i){
     //await setSettings({"firstId": i});
     let tab = await createTab();
-    const p1 = webpageEvent(tab, "start");
-    const p2 = webpageEvent(tab, "stop");
     const {webpageServer} = await getSettings("webpageServer");
     const url = `http://${webpageServer}/getWebpage?id=${i}`;
     tab = await loadUrlInTab(url, tab);
     let params;
-    params = await p1;
+    params = await webpageEvent(tab, "start");
     const {title} = params;
     const record = new Recording(tab);
+    record.title = title;
     record.start();
 
     params = {};
     try {
       params = await Promise.race([
-        p2, waiting(timeout)
+        webpageEvent(tab, "stop"), waiting(timeout)
       ]);
     } catch (e){
     }
 
     const {message} = params;
-    const usage = record.stop();
-    await sendResultToServer({title, usage, message});
+    await record.stop();
+    await uploadMessage({title, message});
     await closeTab(tab);
   }
 

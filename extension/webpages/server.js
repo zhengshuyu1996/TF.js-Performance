@@ -31,16 +31,32 @@ app.get("/getWebpage", (req, resp) => {
 
 app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
-app.post("/upload", (req, resp) => {
-	const id = req.query.id;
-	const usage = req.body.usage;
-	const message = req.body.message;
 
-	console.log(message);
-	fs.writeFileSync(path.resolve(args.output, `${id}.json`), usage);
-	fs.writeFileSync(path.resolve(args.output, `${id}.log`), message);
+let usages = [];
+let message = void 0;
+app.post("/uploadUsage", (req, resp) => {
+	const id = req.query.id;
+	let usage;
+	try{
+		usage = JSON.parse(req.body.usage);	
+	} catch (e){
+		console.error(usage);
+		return ;
+	}
+	usages.push(usage);
 	resp.end();
 });
+
+app.post("/uploadMessage", (req, resp) => {
+	const id = req.query.id;
+	message = req.body.message;
+	console.error(message);
+	fs.writeFileSync(path.resolve(args.output, `${id}.json`), JSON.stringify(usages));
+	usages.length = 0;
+	fs.writeFileSync(path.resolve(args.output, `${id}.log`), message);
+	message = void 0;
+	resp.end();
+})
 
 app.listen(args.port, "localhost");
 console.error("started");
