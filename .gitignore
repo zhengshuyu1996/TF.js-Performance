@@ -9,4 +9,5 @@ mnist-comparison/data
 mnist-comparison/model
 inference-comparison/model
 inference-comparison/data
-extension
+extension/output
+extension/node_modules

@@ -9,7 +9,6 @@ async function triggerStart(){
     await new Promise((resolve) => setTimeout(resolve, 5000));
     // wait for 5 seconds
     let event = new CustomEvent("started");
-    console.log("start");
     document.dispatchEvent(event);
 }
 

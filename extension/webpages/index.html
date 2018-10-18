@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>html</title>
+</head>
+<body>
+	<p>paragraph</p>
+	<script>
+		setTimeout(() => {
+			//const event = new Event("started");
+			const event = new CustomEvent("started", {
+			});
+			document.dispatchEvent(event);
+		}, 5000);
+
+		setTimeout(() => {
+			//const event = new Event("finished");
+			const event = new CustomEvent("finished", {
+				"detail": {
+					"message": "byebye"
+				}
+			});
+
+			document.dispatchEvent(event);
+		}, 10000);
+	</script>
+</body>
+</html>

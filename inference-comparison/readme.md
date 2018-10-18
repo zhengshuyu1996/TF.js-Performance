@@ -31,7 +31,7 @@ example: `http://localhost:8000/template.html?model=vgg19&backend=cpu&testsize=1
 1. cpu
 2. gpu
 
+## Message
 
-
-
+`Tfjs \t model \t backend \t testSize \t warmUpTime \t inferencetime`
 
