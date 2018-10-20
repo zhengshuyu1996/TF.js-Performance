@@ -10,8 +10,8 @@ function loadPic(){
     for (let i = 0; i < DATASIZE; i++){
         let elem = document.createElement("canvas");
         elem.setAttribute("id", "pic"+i);
-        elem.setAttribute("width", picsize);
-        elem.setAttribute("height", picsize);
+        elem.setAttribute("width", picSize);
+        elem.setAttribute("height", picSize);
         let img = new Image();
         img.crossOrigin = "Anonymous"; // important
         
@@ -19,7 +19,7 @@ function loadPic(){
             elem.getContext("2d").drawImage(img, 0, 0);
         }
         
-        img.src =  LOCALHOST+"/data/pictures/"+picsize+"/pic"+i+".png";
+        img.src =  LOCALHOST+"/data/pictures/"+picSize+"/pic"+i+".png";
         picholder.appendChild(elem);
     }
 }

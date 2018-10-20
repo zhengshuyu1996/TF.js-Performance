@@ -17,7 +17,7 @@ async function initData(){
                         toFloat().
                         sub(offset).
                         div(offset).
-                        reshape([1, picsize, picsize, 3]);
+                        reshape([1, picSize, picSize, 3]);
         data.push(dataItem);
     }
     return data;
@@ -49,11 +49,11 @@ async function initModel(){
 }
 
 async function infer(data){
-    triggerStart();
+    await triggerStart();
     statusLog("Inferring");
 
     let totTime = 0;
-    for (let i = 0; i < testsize; i++){
+    for (let i = 0; i < testSize; i++){
         if (verbose)
             console.log("Case" + i);
 

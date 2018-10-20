@@ -20,5 +20,13 @@ Structure:
 - Loss function: cross entropy 
 - **No dropout layers**
 
+## URL
 
+example: `http://localhost:8000/jslib-training-mnist/brainjs.html?libname=brainjs&backend=cpu&trainsize=10000&hiddenlayer=1&hiddensize=64`
+
+1. lib
+2. backend
+3. trainsize
+4. hiddenlayer
+5. hiddensize
 

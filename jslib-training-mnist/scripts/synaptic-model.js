@@ -100,6 +100,10 @@ async function init(){
 }
 
 async function main(){
+    let argsStatus = parseArgs(); // defined in params.js
+    if (argsStatus == false)
+        return;
+    
     statusLog("Initializing");
     let data = await init();
     

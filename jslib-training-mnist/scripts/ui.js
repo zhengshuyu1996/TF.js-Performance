@@ -18,6 +18,7 @@ function triggerEnd(msg){
             message: msg
         }
     });
+    console.log("end");
     console.log(msg);
     document.dispatchEvent(event);
 }

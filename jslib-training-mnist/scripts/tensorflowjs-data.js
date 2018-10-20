@@ -23,11 +23,11 @@ const NUM_TRAIN_ELEMENTS = 60000;
 const NUM_TEST_ELEMENTS = NUM_DATASET_ELEMENTS - NUM_TRAIN_ELEMENTS;
 
 const MNIST_IMAGES_SPRITE_PATH =
-    LOCAL_SERVER+"/data/mnist_images.png";
-    //'https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png';
-const MNIST_LABELS_PATH =
-    LOCAL_SERVER+"/data/mnist_labels_uint8";
-    //'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
+     LOCALHOST+"/data/mnist/mnist_images.png";
+     //'https://storage.googleapis.com/learnjs-data/model-builder/mnist_images.png';
+ const MNIST_LABELS_PATH =
+     LOCALHOST+"/data/mnist/mnist_labels_uint8";
+     //'https://storage.googleapis.com/learnjs-data/model-builder/mnist_labels_uint8';
 
 /**
  * A class that fetches the sprited MNIST dataset and returns shuffled batches.
@@ -36,49 +36,6 @@ const MNIST_LABELS_PATH =
  * manipulation manually.
  */
  
-/** Shuffles the array using Fisher-Yates algorithm. */
-function shuffle(array){
-  let counter = array.length;
-  let temp = 0;
-  let index = 0;
-  // While there are elements in the array
-  while (counter > 0) {
-    // Pick a random index
-    index = (Math.random() * counter) | 0;
-    // Decrease counter by 1
-    counter--;
-    // And swap the last element with it
-    temp = array[counter];
-    array[counter] = array[index];
-    array[index] = temp;
-  }
-}
-
-function OneHot2Label(LabelOneHot){
-    // convert onehot format label array to class label array
-    let num = LabelOneHot.length/OUTPUT_NODE;
-    let labels = new Uint8Array(num);
-
-    for (let i = 0; i < num; i++){
-        labels[i] = 0;
-        for (let j = 0; j < OUTPUT_NODE; j++){
-            if (LabelOneHot[i * OUTPUT_NODE + j] == 1)
-                labels[i] = j;
-        }
-    }
-    return labels;
-}
-
-function createShuffledIndices(n){
-  const shuffledIndices = new Uint32Array(n);
-  for (let i = 0; i < n; ++i) {
-    shuffledIndices[i] = i;
-  }
-  shuffle(shuffledIndices);
-  return shuffledIndices;
-}
-
-
 class MnistData {
   constructor() {
     this.shuffledTrainIndex = 0;
@@ -134,8 +91,8 @@ class MnistData {
 
     // Create shuffled indices into the train/test set for when we select a
     // random dataset element for training / validation.
-    this.trainIndices = createShuffledIndices(NUM_TRAIN_ELEMENTS);
-    this.testIndices = createShuffledIndices(NUM_TEST_ELEMENTS);
+    this.trainIndices = tf.util.createShuffledIndices(NUM_TRAIN_ELEMENTS);
+    this.testIndices = tf.util.createShuffledIndices(NUM_TEST_ELEMENTS);
 
     // Slice the the images and labels into train and test sets.
     this.trainImages =
@@ -180,6 +137,9 @@ class MnistData {
       batchLabelsArray.set(label, i * NUM_CLASSES);
     }
 
-    return {xs:batchImagesArray, labels:batchLabelsArray};
+    const xs = tf.tensor2d(batchImagesArray, [batchSize, IMAGE_SIZE]);
+    const labels = tf.tensor2d(batchLabelsArray, [batchSize, NUM_CLASSES]);
+
+    return {xs, labels};
   }
 }
