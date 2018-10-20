@@ -1,5 +1,5 @@
 html_list = [
-    "http://localhost:8000/template.html"
+    "http://localhost:8000/tfjs-inference-keras/template.html"
 ]
 
 model_list = [
@@ -9,7 +9,7 @@ model_list = [
 
 backend_list = ["cpu", "gpu"]
 
-testsize = 100
+testsize = 2000
 
 print("[")
 print('    "",')

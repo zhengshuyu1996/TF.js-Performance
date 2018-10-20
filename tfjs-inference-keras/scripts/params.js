@@ -62,6 +62,6 @@ function parseArgs(){
     }
 
     // get right task name
-    task = "Tfjs\t" + modelName + "\t" + backend + "\t" + testsize + "\t";
+    task = "tfjs\tinference\tkeras\t" + modelName + "\t" + backend + "\t" + testsize + "\t";
     return true;
 }

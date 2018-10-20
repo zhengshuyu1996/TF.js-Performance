@@ -1,5 +1,6 @@
-mnist-data
 .DS_Store
+model
+data
 training/mnist-lenet5-tf/.*
 training/mnist-lenet5-tf/bin
 training/mnist-lenet5-tf/include
@@ -7,7 +8,5 @@ training/mnist-lenet5-tf/lib
 training/mnist-lenet5-tf/pip-selfcheck.json
 mnist-comparison/data
 mnist-comparison/model
-inference/model
-inference/data
 extension/output
 extension/node_modules

@@ -19,7 +19,7 @@ function loadPic(){
             elem.getContext("2d").drawImage(img, 0, 0);
         }
         
-        img.src =  LOCALHOST+"/data/"+picsize+"/pic"+i+".png";
+        img.src =  LOCALHOST+"/data/pictures/"+picsize+"/pic"+i+".png";
         picholder.appendChild(elem);
     }
 }

@@ -1,6 +1,6 @@
 ## URL
 
-example: `http://localhost:8000/template.html?model=vgg19&backend=cpu&testsize=100`
+example: `http://localhost:8000/tfjs-inference-keras/template.html?model=vgg19&backend=cpu&testsize=100`
 
 1. model
 2. backend
@@ -10,7 +10,6 @@ example: `http://localhost:8000/template.html?model=vgg19&backend=cpu&testsize=1
 ### Models
 
 224*224:
-
 1. vgg16
 2. vgg19
 3. resnet50
@@ -21,7 +20,6 @@ example: `http://localhost:8000/template.html?model=vgg19&backend=cpu&testsize=1
 8. nasnetlarge
 
 299*299:
-
 1. xception
 2. inceptionv3
 3. inceptionresnetv2
@@ -33,5 +31,5 @@ example: `http://localhost:8000/template.html?model=vgg19&backend=cpu&testsize=1
 
 ## Message
 
-`Tfjs \t model \t backend \t testSize \t warmUpTime \t inferencetime`
+`tfjs inference keras <model> <backend> <testSize> <warmUpTime> <inferenceTime>`
 

@@ -5,6 +5,7 @@ email: xdw@pku.edu.cn
  */
 
 let model;
+let warmupTime;
 
 async function initData(){
     let offset = tf.scalar(127.5);
@@ -40,10 +41,11 @@ async function initModel(){
     // warm up the model
     statusLog("Warming up");
         
-    console.time("warmup");
+
+    let begin = new Date();
     model.predict(tf.zeros([1, 224, 224, 3])).dispose();
-    console.timeEnd("warmup");
-    
+    let end = new Date();
+    warmupTime = end - begin;
 }
 
 async function infer(data){
@@ -60,7 +62,7 @@ async function infer(data){
         let end = new Date();
         totTime += end - begin;
     }
-    triggerEnd(task + totTime + "ms");
+    triggerEnd(task + warmupTime + "\t" + totTime);
 }
 
 async function init(){
