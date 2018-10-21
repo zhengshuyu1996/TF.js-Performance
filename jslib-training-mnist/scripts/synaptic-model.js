@@ -1,26 +1,37 @@
+'use strict'
 /*
 author: David Xiang
 email: xdw@pku.edu.cn
  */
-'use strict'
-var net, trainer;
-const TASK = "Training\tsynaptic\tcpu\t"
 
-function initNet(){
+let model, trainer;
+
+function initModel(){
     // constuct the net
+
+    if (verbose){
+        console.log("init model");
+    }
+    
     let inputLayer = new synaptic.Layer(INPUT_NODE);
-    let hiddenLayer1 = new synaptic.Layer(HIDDEN_SIZE);
-    let hiddenLayer2 = new synaptic.Layer(HIDDEN_SIZE);
+    let hiddenLayers = [];
     let outputLayer = new synaptic.Layer(OUTPUT_NODE);
-    inputLayer.project(hiddenLayer1);
-    hiddenLayer1.project(hiddenLayer2);
-    hiddenLayer2.project(outputLayer);
-    net = new synaptic.Network({
+
+    for (let i = 0; i < hiddenLayerNum; i++){
+        hiddenLayers.push(new synaptic.Layer(hiddenLayerSize));
+    }
+
+    inputLayer.project(hiddenLayers[0]);
+    for (let i = 0; i < hiddenLayerNum - 1; i++){
+        hiddenLayers[i].project(hiddenLayers[i+1]);
+    }
+    hiddenLayers[hiddenLayerNum-1].project(outputLayer);
+    model = new synaptic.Network({
         input: inputLayer,
-        hidden: [hiddenLayer1, hiddenLayer2],
+        hidden: hiddenLayers,
         output: outputLayer
     })
-    trainer = new synaptic.Trainer(net);
+    trainer = new synaptic.Trainer(model);
 }
 
 function getStdInput(xs, labels){
@@ -40,11 +51,11 @@ async function train(data){
 
     let totTime = 0;
 
-    for (let i = 0; i < TRAIN_BATCHES; i++){
+    for (let i = 0; i < trainBatch; i++){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
         let trainData = getStdInput(batch.xs, batch.labels);
 
-        if (VERBOSE)
+        if (verbose)
             console.log(i);
 
         let begin = new Date();
@@ -59,8 +70,10 @@ async function train(data){
         let end = new Date();
         totTime += end - begin;
     }
+    
+    triggerEnd(task + totTime);
 
-    if (DO_TEST){
+    if (dotest){
         statusLog("Testing");
         let batch = await data.nextTestBatch(TEST_SIZE);
         let testData = getStdInput(batch.xs, batch.labels);
@@ -86,11 +99,10 @@ async function train(data){
         let acc = count / TEST_SIZE;
         console.log('accuracy: ' + acc.toFixed(3));
     }
-    triggerEnd(TASK + totTime + "ms\t");
 }
 
 async function init(){
-    initNet();
+    initModel();
 
     let data = new MnistData();
     await data.load();

@@ -18,11 +18,12 @@ let libName;
 let task;
 let backend;
 let trainSize;
-let hiddenSize;
-let hiddenLayer;
+let hiddenLayerSize;
+let hiddenLayerNum;
 
 let trainBatch;
 let verbose = true;
+let dotest = false;
 
 let libList = ["tensorflowjs", "brainjs", "synaptic", "convnetjs"];
 let backendList = ["cpu", "gpu"];
@@ -40,8 +41,8 @@ function parseArgs(){
     libName = getParam(query, "libname");
     backend = getParam(query, "backend");
     trainSize = parseInt(getParam(query, "trainsize"));
-    hiddenSize = parseInt(getParam(query, "hiddensize"));
-    hiddenLayer = parseInt(getParam(query, "hiddenlayer"));
+    hiddenLayerSize = parseInt(getParam(query, "hiddenlayersize"));
+    hiddenLayerNum = parseInt(getParam(query, "hiddenlayernum"));
     trainBatch = trainSize / BATCH_SIZE;
 
 
@@ -60,7 +61,7 @@ function parseArgs(){
         return false;
     }
 
-    if (trainSize <= 0 || hiddenSize <= 0 || hiddenLayer <= 0){
+    if (trainSize <= 0 || hiddenLayerSize <= 0 || hiddenLayerNum <= 0){
         triggerStart();
         triggerEnd("Invalid URI:" + address);
         console.error("Invalid URI:" + address);
@@ -71,7 +72,7 @@ function parseArgs(){
 
     // get right task name
     task = "jslib\ttraining\tmnist\t" + libName + "\t" + backend + "\t" 
-    + trainSize + "\t" + hiddenLayer + "\t" + hiddenSize;
+    + trainSize + "\t" + hiddenLayerNum + "\t" + hiddenLayerSize + "\t";
     document.getElementById("task").innerText = task;
     return true;
 }

@@ -1,15 +1,20 @@
+'use strict'
 /*
 author: David Xiang
 email: xdw@pku.edu.cn
  */
-'use strict'
-var net;
-const TASK = "Training\tbrainjs\tcpu\t";
+let model;
 
-function initNet(){
+function initModel(){
     // constuct the net
-    net = new brain.NeuralNetwork({
-        hiddenLayers: [512, 512],
+    let hiddenLayers = [];
+    
+    for (let i = 0; i < hiddenLayerNum; i++){
+        hiddenLayers.push(hiddenLayerSize);
+    }
+
+    model = new brain.NeuralNetwork({
+        hiddenLayers: hiddenLayers,
         // if assign relu to activation, then the training process 
         // can not converge. Why?
         // activation: "relu"
@@ -39,28 +44,30 @@ async function train(data){
 
     let totTime = 0;
 
-    for (let i = 0; i < TRAIN_BATCHES; i++){
+    for (let i = 0; i < trainBatch; i++){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
         let trainData = getStdInput(batch.xs, batch.labels);
 
-        if(VERBOSE)
+        if(verbose)
             console.log(i);
 
         let begin = new Date();
 
-        net.train(trainData, {
+        model.train(trainData, {
             iterations: 1,
             learningRate: LEARNING_RATE,
             momentum: 0.000001, // if we set 0, the library will generate warning
-            log: VERBOSE, // false => only time are printed in console
+            log: verbose, // false => only time are printed in console
             logPeriod: 1
         });
         
         let end = new Date();
         totTime += end - begin;
     }
+    
+    triggerEnd(task + totTime);
 
-    if(DO_TEST){
+    if(dotest){
         // test procedure
         statusLog("Testing");
         let batch = await data.nextTestBatch(TEST_SIZE);
@@ -72,7 +79,7 @@ async function train(data){
             let y = labels[j]; // correct label
 
             // reduce: get max value's key
-            let output = net.run(testData[j].input);
+            let output = model.run(testData[j].input);
             let max = output[0];
             let y_ = 0;
             for (let k = 0; k < OUTPUT_NODE; k++){
@@ -90,12 +97,10 @@ async function train(data){
         let acc = count / TEST_SIZE;
         console.log('accuracy: ' + acc.toFixed(3));
     }
-    
-    triggerEnd(TASK + totTime + "ms\t");
 }
 
 async function init(){
-    initNet();
+    initModel();
 
     let data = new MnistData();
     await data.load();
@@ -105,6 +110,10 @@ async function init(){
 }
 
 async function main(){
+    let argsStatus = parseArgs(); // defined in params.js
+    if (argsStatus == false)
+        return;
+
     let data = await init();
     await train(data);
     statusLog("Finished");

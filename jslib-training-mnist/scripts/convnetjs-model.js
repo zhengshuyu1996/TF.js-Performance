@@ -1,15 +1,13 @@
-
+'use strict'
 /*
 author: David Xiang
 email: xdw@pku.edu.cn
  */
-'use strict'
-var net, trainer;
-const TASK = "Training\tconvnetjs\tcpu\t";
+let model, trainer;
 
-function initNet(){
+function initModel(){
     // constuct the net
-    net = new convnetjs.Net();
+    model = new convnetjs.Net();
     
     let layer_defs = [];
     layer_defs.push({
@@ -17,22 +15,22 @@ function initNet(){
         out_sx:1, 
         out_sy:1, 
         out_depth:INPUT_NODE});
-    layer_defs.push({
-        type:"fc", 
-        num_neurons:HIDDEN_SIZE, 
-        activation:"relu"});
-    layer_defs.push({
-        type:"fc", 
-        num_neurons:HIDDEN_SIZE, 
-        activation:"relu"});
+
+    for (let i = 0; i < hiddenLayerNum; i++){
+        layer_defs.push({
+            type:"fc", 
+            num_neurons:hiddenLayerSize, 
+            activation:"relu"});
+    }
+    
     layer_defs.push({
         type:"softmax", 
         num_classes:OUTPUT_NODE});
 
-    net.makeLayers(layer_defs);
+    model.makeLayers(layer_defs);
     
     // initiate
-    trainer = new convnetjs.Trainer(net, {
+    trainer = new convnetjs.Trainer(model, {
         learning_rate:LEARNING_RATE,
         method: "sgd",
         batch_size:BATCH_SIZE,
@@ -59,16 +57,16 @@ async function train(data){
 
     let totTime = 0;
 
-    for (let i = 0; i < TRAIN_BATCHES; i++){
+    for (let i = 0; i < trainBatch; i++){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
         let xs = batch.xs;
         let labelsOneHot = batch.labels;
         let labels = getLabel(labelsOneHot);
         
-        if (VERBOSE)
+        if (verbose)
                 console.log(i)
         
-        for (let j = 0; j < BATCH_SIZE; j++){
+        for (let j = 0; j < trainBatch; j++){
             let x = new convnetjs.Vol(1, 1, INPUT_NODE);
             let y = labels[j];
             for (let k = 0; k < INPUT_NODE; k++){
@@ -89,7 +87,9 @@ async function train(data){
         }
     }
 
-    if (DO_TEST){
+    triggerEnd(task + totTime);
+
+    if (dotest){
         statusLog("Testing");
         let testData = await data.nextTestBatch(TEST_SIZE);
         let xs = testData.xs;
@@ -112,11 +112,10 @@ async function train(data){
         console.log('accuracy: ' + acc.toFixed(3));
     }
 
-    triggerEnd(TASK + totTime + "ms\t");
 }
 
 async function init(){
-    initNet();
+    initModel();
     
     let data = new MnistData();
     await data.load();
@@ -126,6 +125,10 @@ async function init(){
 }
 
 async function main(){
+    let argsStatus = parseArgs(); // defined in params.js
+    if (argsStatus == false)
+        return;
+
     let data = await init();
     await train(data);
     statusLog("Finished");

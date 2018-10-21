@@ -23,16 +23,16 @@ async function initModel(){
     const optimizer = tf.train.sgd(LEARNING_RATE);
 
 
-    for (let i = 0; i < hiddenLayer; i++){
+    for (let i = 0; i < hiddenLayerSize; i++){
         if(i == 0){
             model.add(tf.layers.dense({
                 inputShape: [INPUT_NODE],
-                units: hiddenSize,
+                units: hiddenLayerNum,
                 activation: "relu",
             }));
         }else{
             model.add(tf.layers.dense({
-                units: hiddenSize,
+                units: hiddenLayerNum,
                 activation: "relu",
             }));
         }
@@ -84,6 +84,20 @@ async function train(data){
     }
 
     triggerEnd(task + totTime);
+
+    if (dotest){
+        statusLog("Testing");
+        let batch = data.nextTrainBatch(BATCH_SIZE);
+        let testData = data.nextTestBatch(TEST_SIZE);
+        let history = await model.fit(
+            batch.xs, 
+            batch.labels,
+            {batchSize: BATCH_SIZE, testData, epochs: 1}
+        );
+
+        let acc = history.history.acc[0];
+        console.log('accuracy: ' + acc.toFixed(3));
+    }
 }
 
 async function init(){
