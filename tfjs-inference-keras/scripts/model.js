@@ -36,7 +36,7 @@ async function initModel(){
     }
 
     statusLog("Loading Model");
-    model = await tf.loadModel(LOCALHOST+"/model/tfjs/"+modelName+"/model.json");
+    model = await tf.loadModel(LOCALHOST+"/model/tensorflowjs/"+modelName+"/model.json");
 
     // warm up the model
     statusLog("Warming up");
