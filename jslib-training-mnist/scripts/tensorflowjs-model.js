@@ -41,7 +41,6 @@ async function initModel(){
     // output layer
     model.add(tf.layers.dense({
         units: OUTPUT_NODE,
-        kernelInitializer: tf.initializers.truncatedNormal({mean:0, stddev:0.1}),
         activation: "softmax"
     }));
 
@@ -60,7 +59,7 @@ async function train(data){
     let totTime = 0;
 
     for (let i = 0; i < trainBatch; i++){
-        let batch = data.nextTrainBatch(BATCH_SIZE);
+        let batch = await data.nextTrainBatch(BATCH_SIZE);
 
         let begin = new Date();
 
@@ -71,6 +70,7 @@ async function train(data){
         );
 
         let loss = history.history.loss[0];
+        let accuracy = history.history.acc[0];
 
         tf.dispose(batch);
         await tf.nextFrame();
@@ -79,7 +79,8 @@ async function train(data){
         totTime += end - begin;
 
         if (verbose){
-            console.log('Batch #' + i + "    Loss: " + loss.toFixed(3));
+           console.log('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
+                "    Accuracy: " + accuracy.toFixed(3));
         }
     }
 
@@ -87,8 +88,8 @@ async function train(data){
 
     if (dotest){
         statusLog("Testing");
-        let batch = data.nextTrainBatch(BATCH_SIZE);
-        let testData = data.nextTestBatch(TEST_SIZE);
+        let batch = await data.nextTrainBatch(BATCH_SIZE);
+        let testData = await data.nextTestBatch(TEST_SIZE);
         let history = await model.fit(
             batch.xs, 
             batch.labels,

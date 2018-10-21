@@ -66,7 +66,7 @@ async function train(data){
         if (verbose)
                 console.log(i)
         
-        for (let j = 0; j < trainBatch; j++){
+        for (let j = 0; j < BATCH_SIZE; j++){
             let x = new convnetjs.Vol(1, 1, INPUT_NODE);
             let y = labels[j];
             for (let k = 0; k < INPUT_NODE; k++){
@@ -87,6 +87,10 @@ async function train(data){
         }
     }
 
+    let json = model.toJSON();
+    console.log(JSON.stringify(json));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     triggerEnd(task + totTime);
 
     if (dotest){
@@ -102,8 +106,8 @@ async function train(data){
             for (let k = 0; k < INPUT_NODE; k++){
                 x.set(0, 0, k, xs[j*INPUT_NODE+k]);
             }
-            net.forward(x);
-            let y_ = net.getPrediction();
+            model.forward(x);
+            let y_ = model.getPrediction();
             if (y_ === y){
                 count++;
             }

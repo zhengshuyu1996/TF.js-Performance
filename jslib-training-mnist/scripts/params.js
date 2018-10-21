@@ -12,6 +12,7 @@ const OUTPUT_NODE = 10;
 const NUM_CHANNELS = 1;
 const LEARNING_RATE = 0.15;
 const BATCH_SIZE = 64;
+const TEST_SIZE = 10000;
 
 // args to be extracted from url
 let libName;
@@ -23,7 +24,7 @@ let hiddenLayerNum;
 
 let trainBatch;
 let verbose = true;
-let dotest = false;
+let dotest = true;
 
 let libList = ["tensorflowjs", "brainjs", "synaptic", "convnetjs"];
 let backendList = ["cpu", "gpu"];
