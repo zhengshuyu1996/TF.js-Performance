@@ -27,12 +27,12 @@ async function initModel(){
         if(i == 0){
             model.add(tf.layers.dense({
                 inputShape: [INPUT_NODE],
-                units: hiddenLayerNum,
+                units: hiddenLayerSize,
                 activation: "relu",
             }));
         }else{
             model.add(tf.layers.dense({
-                units: hiddenLayerNum,
+                units: hiddenLayerSize,
                 activation: "relu",
             }));
         }
@@ -79,7 +79,7 @@ async function train(data){
         totTime += end - begin;
 
         if (verbose){
-           console.log('Batch #' + i + "    Loss: " + loss.toFixed(3) + 
+            console.log('Batch #' + i + "    Loss: " + loss.toFixed(3) +
                 "    Accuracy: " + accuracy.toFixed(3));
         }
     }
