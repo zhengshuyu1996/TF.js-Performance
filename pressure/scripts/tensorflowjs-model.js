@@ -23,7 +23,7 @@ async function initModel(){
     const optimizer = tf.train.sgd(LEARNING_RATE);
 
 
-    for (let i = 0; i < hiddenLayerSize; i++){
+    for (let i = 0; i < hiddenLayerNum; i++){
         if(i == 0){
             model.add(tf.layers.dense({
                 inputShape: [INPUT_NODE],
