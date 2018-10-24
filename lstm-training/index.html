@@ -1,0 +1,94 @@
+<!--
+Copyright 2018 Google LLC. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+      <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.cyan-teal.min.css" /> -->
+  </head>
+
+  <style>
+    body {
+      font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+      margin-top: 50px;
+      margin-left: 50px;
+      width: 80%;
+    }
+    .canvases {
+      display: inline-block;
+    }
+    .monospace {
+      font-family: monospace;
+    }
+    .input-title {
+      display: inline-block;
+      width: 20em;
+    }
+    .vertical-sections {
+      border: 1px solid #AAA;
+      padding: 6px;
+      margin: 6px;
+    }
+    .horizontal-sections {
+      display: inline-block;
+      padding-right: 20px;
+      vertical-align: top;
+    }
+    #app-status {
+      color: blue;
+      font-size: 150%;
+      padding-bottom: 1em;
+    }
+    select {
+      font-size: 14pt;
+    }
+    button {
+      font-size: 14pt;
+      margin: 3px;
+    }
+    input:disabled {
+      background: #eeeeee;
+    }
+    textarea {
+      width:98%;
+    }
+  </style>
+
+  <body>
+    <h1>TensorFlow.js Example:<br/>Train LSTM to Generate Text</h1>
+    <div>
+
+      <div id="task" class="vertical-sections">
+      </div>
+
+      <div id="app-status" class="vertical-sections">
+        <span>Please select a text data source or enter your custom text in the text box below and click "load text data" first</span>
+      </div>
+
+      <div class="vertical-sections">
+        <textarea class="monospace" id="test-text" value="" rows="20"></textarea>
+      </div>
+
+    </div>
+    <script src="js/tfjs@0.13.0"></script>
+    <script src="js/data.js"></script>
+    <script src="js/params.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/lstm.js"></script>
+
+  </body>
+</html>
