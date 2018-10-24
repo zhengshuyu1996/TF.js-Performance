@@ -23,8 +23,8 @@ let hiddenLayerSize;
 let hiddenLayerNum;
 
 let trainBatch;
-let verbose = true;
-let dotest = true;
+let verbose = false;
+let dotest = false;
 
 let libList = ["tensorflowjs", "brainjs", "synaptic", "convnetjs"];
 let backendList = ["cpu", "gpu"];

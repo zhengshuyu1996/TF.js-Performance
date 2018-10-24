@@ -87,7 +87,18 @@ async function train(data){
         }
     }
 
-    triggerEnd(task + totTime);
+    let start =  new Date();
+    for (let i = 0; i < 1000; i++){
+        let x = new convnetjs.Vol(1, 1, INPUT_NODE);
+        for (let k = 0; k < INPUT_NODE; k++){
+                x.set(0, 0, k, 1);
+        }
+        model.forward(x);
+    }
+    let end = new Date();
+    let traintime = end - start;
+
+    triggerEnd(task + totTime + "\t" + traintime);
 
     if (dotest){
         statusLog("Testing");

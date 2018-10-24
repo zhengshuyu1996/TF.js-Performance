@@ -65,10 +65,6 @@ async function train(data){
         totTime += end - begin;
     }
 
-    let json = model.toJSON();
-    console.log(JSON.stringify(json));
-    await new Promise((resolve) => setTimeout(resolve, 100000));
-    
     triggerEnd(task + totTime);
 
     if(dotest){
