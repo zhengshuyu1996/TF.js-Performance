@@ -1,0 +1,12 @@
+jslib	train	mnist	python	cpu	640	1	64	cpu	17
+jslib	train	mnist	python	cpu	640	1	128	cpu	19
+jslib	train	mnist	python	cpu	640	1	256	cpu	28
+jslib	train	mnist	python	cpu	640	2	64	cpu	18
+jslib	train	mnist	python	cpu	640	2	128	cpu	22
+jslib	train	mnist	python	cpu	640	2	256	cpu	31
+jslib	train	mnist	python	cpu	640	4	64	cpu	19
+jslib	train	mnist	python	cpu	640	4	128	cpu	26
+jslib	train	mnist	python	cpu	640	4	256	cpu	43
+jslib	train	mnist	python	cpu	640	8	64	cpu	23
+jslib	train	mnist	python	cpu	640	8	128	cpu	34
+jslib	train	mnist	python	cpu	640	8	256	cpu	65

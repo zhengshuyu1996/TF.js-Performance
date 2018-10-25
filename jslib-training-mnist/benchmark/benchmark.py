@@ -2,6 +2,7 @@ import argparse
 import tensorflow as tf
 import tensorflow.keras as keras
 import numpy as np
+import time
 
 from keras.models import Sequential
 from keras.layers import Dense
@@ -20,6 +21,7 @@ train_size = 0;
 # data, split between train and validate sets
 (x_train, y_train), (x_eval, y_eval) = mnist.load_data("mnist")
 x_train = x_train.reshape(x_train.shape[0], INPUT_NODE)
+#print(x_train.shape)
 x_eval = x_eval.reshape(x_eval.shape[0], INPUT_NODE)
 x_train = x_train.astype(np.float32) / 255 - 0.5
 x_eval = x_eval.astype(np.float32) / 255 - 0.5
@@ -54,19 +56,31 @@ def init(num, size):
         metrics=["accuracy"]
     )
 
-def train(train_size):
-    iter = train_size / BATCH_SIZE
-    #for i in range(iter):
-    model.fit(
-        x_train, 
-        y_train,
-        epochs=1,
-        steps_per_epoch=iter,
-        validation_steps=0,
-        batch_size=BATCH_SIZE,
-        verbose=2,
-        validation_data=(x_eval, y_eval)
-    )
+def train(num, size, train_size):
+    train_time = 0
+    iter = int(train_size / BATCH_SIZE)
+    #print(iter)
+
+    for i in range(iter):
+        x = x_train[i*64:(i+1)*64]
+        y = y_train[i:i+1]
+        print(i)
+        start = time.time()
+        model.fit(
+            x_train, 
+            y_train,
+            epochs=1,
+            batch_size=BATCH_SIZE,
+            verbose=0
+        )
+        end = time.time()
+        train_time = train_time + end - start
+
+    #print(int(train_time))
+    f = open("output.txt", "a")
+    f.write("jslib\ttrain\tmnist\tpython\tcpu\t%d\t%d\t%d\tcpu\t%d\n" % (train_size, num, size, train_time))
+    # modify this message when using CUDA
+    f.close()
 
 
 if __name__ == "__main__":
@@ -80,4 +94,4 @@ if __name__ == "__main__":
     print("train size: " + str(args.train))
     print("start training...")
     init(args.num, args.size)
-    train(args.size)
+    train(args.num, args.size, args.train)
