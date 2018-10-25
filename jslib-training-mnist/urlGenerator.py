@@ -5,8 +5,8 @@ lib_list = [
 ]
 
 backend_list = ["cpu", "gpu"]
-trainsize = 3200
-hiddenlayernum = [1, 2, 4]
+trainsize = 640
+hiddenlayernum = [1, 2, 4, 8]
 hiddenlayersize = [64, 128, 256]
 
 
@@ -26,7 +26,7 @@ for i in range(r1):
                     continue
                 print('    "%s%s.html?libname=%s&backend=%s&trainsize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
                     (path, lib_list[i], lib_list[i], backend_list[j], trainsize, hiddenlayernum[k], hiddenlayersize[l]), end="")
-                if (count !=  44):
+                if (count !=  60):
                     print(",")
                 else:
                     print("")
