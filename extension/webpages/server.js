@@ -82,7 +82,7 @@ app.post("/uploadMessage", (req, resp) => {
 	message = req.body.message;
 	console.log(message);
 	
-	id = message.split('\t').join(" ");
+	let id = message.split('\t').join(" ");
 	fs.writeFileSync(path.resolve(args.output, `${id}.json`), JSON.stringify(usages));
 	usages.length = 0;
 	//fs.writeFileSync(path.resolve(args.output, `${id}.log`), message);
