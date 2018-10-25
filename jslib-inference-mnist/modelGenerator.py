@@ -2,6 +2,7 @@ import argparse
 import tensorflow as tf
 import keras
 import numpy as np
+import tensorflowjs as tfjs
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.datasets import mnist
@@ -72,4 +73,4 @@ if __name__ == "__main__":
     print("start training...")
     init(args.num, args.size)
     train()
-    model.save("mnist-%d-%d.h5" % (args.num, args.size))
+    tfjs.converters.save_keras_model(model, "mnist-%d-%d" % (args.num, args.size))

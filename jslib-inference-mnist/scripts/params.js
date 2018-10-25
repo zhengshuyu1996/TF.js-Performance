@@ -6,25 +6,21 @@ email: xdw@pku.edu.cn
 
 // constant args
 const LOCALHOST = "http://localhost:8000";
+// const LOCALPATH = "/Users/xiangdongwei/TF.js-Performance";
 const IMAGE_LENGTH = 28;
 const INPUT_NODE = 784;
 const OUTPUT_NODE = 10;
 const NUM_CHANNELS = 1;
-const LEARNING_RATE = 0.15;
-const BATCH_SIZE = 64;
-const TEST_SIZE = 1000;
 
 // args to be extracted from url
 let libName;
 let task;
 let backend;
-let trainSize;
+let inferSize;
 let hiddenLayerSize;
 let hiddenLayerNum;
 
-let trainBatch;
 let verbose = false;
-let dotest = false;
 
 let libList = ["tensorflowjs", "brainjs", "synaptic", "convnetjs"];
 let backendList = ["cpu", "gpu"];
@@ -41,11 +37,9 @@ function parseArgs(){
 
     libName = getParam(query, "libname");
     backend = getParam(query, "backend");
-    trainSize = parseInt(getParam(query, "trainsize"));
+    inferSize = parseInt(getParam(query, "infersize"));
     hiddenLayerSize = parseInt(getParam(query, "hiddenlayersize"));
     hiddenLayerNum = parseInt(getParam(query, "hiddenlayernum"));
-    trainBatch = trainSize / BATCH_SIZE;
-
 
     // check whether these params are valid
     if (backendList.indexOf(backend) === -1){
@@ -62,7 +56,7 @@ function parseArgs(){
         return false;
     }
 
-    if (trainSize <= 0 || hiddenLayerSize <= 0 || hiddenLayerNum <= 0){
+    if (inferSize <= 0 || hiddenLayerSize <= 0 || hiddenLayerNum <= 0){
         triggerStart();
         triggerEnd("Invalid URI:" + address);
         console.error("Invalid URI:" + address);
@@ -72,8 +66,8 @@ function parseArgs(){
     
 
     // get right task name
-    task = "jslib\ttraining\tmnist\t" + libName + "\t" + backend + "\t" 
-    + trainSize + "\t" + hiddenLayerNum + "\t" + hiddenLayerSize + "\t";
+    task = "jslib\tinference\tmnist\t" + libName + "\t" + backend + "\t" 
+    + inferSize + "\t" + hiddenLayerNum + "\t" + hiddenLayerSize + "\t";
     document.getElementById("task").innerText = task;
     return true;
 }

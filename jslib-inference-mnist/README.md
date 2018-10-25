@@ -6,9 +6,7 @@ we chose about seven popular neuron network JavaScript library to run training a
 
 Dataset: mnist dataset on http://yann.lecun.com/exdb/mnist/
 
-Train Input: 3200 images * 28 * 28 pixels * 1 channels
-
-Test Input: 1000 images * 28 * 28 pixels * 1 channels
+Infer Input: 1000 images * 28 * 28 pixels * 1 channels
 
 Model: a simple DNN model (with a little modification) in [Keras Official Examples](https://github.com/keras-team/keras/blob/master/examples/mnist_mlp.py)
 
@@ -21,7 +19,7 @@ Structure:
 
 ## URL
 
-example: `http://localhost:8000/jslib-training-mnist/brainjs.html?libname=brainjs&backend=cpu&infersize=3200&hiddenlayernum=1&hiddenlayersize=64`
+example: `http://localhost:8000/jslib-inference-mnist/brainjs.html?libname=brainjs&backend=cpu&testsize=3200&hiddenlayernum=1&hiddenlayersize=64`
 
 1. lib
 2. backend
@@ -31,4 +29,4 @@ example: `http://localhost:8000/jslib-training-mnist/brainjs.html?libname=brainj
 
 ## Message
 
-`jslib inference mnist libName backend inferSize hiddenLayerNum hiddenLayerSize loadTime totTime`
+`jslib training mnist libName backend trainSize hiddenLayerNum hiddenLayerSize totTime`

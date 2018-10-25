@@ -1,11 +1,11 @@
-path = "http://localhost:8000/jslib-training-mnist/"
+path = "http://localhost:8000/jslib-inference-mnist/"
 
 lib_list = [
     "tensorflowjs", "convnetjs", "synaptic", "brainjs"
 ]
 
 backend_list = ["cpu", "gpu"]
-trainsize = 3200
+infersize = 1000
 hiddenlayernum = [1, 2, 4]
 hiddenlayersize = [64, 128, 256]
 
@@ -24,8 +24,8 @@ for i in range(r1):
             for l in range(r4):
                 if lib_list[i] != "tensorflowjs" and backend_list[j] == "gpu":
                     continue
-                print('    "%s%s.html?libname=%s&backend=%s&trainsize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
-                    (path, lib_list[i], lib_list[i], backend_list[j], trainsize, hiddenlayernum[k], hiddenlayersize[l]), end="")
+                print('    "%s%s.html?libname=%s&backend=%s&infersize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
+                    (path, lib_list[i], lib_list[i], backend_list[j], infersize, hiddenlayernum[k], hiddenlayersize[l]), end="")
                 if (count !=  44):
                     print(",")
                 else:
