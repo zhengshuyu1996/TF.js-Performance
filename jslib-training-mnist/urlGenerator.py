@@ -26,7 +26,7 @@ for i in range(r1):
                     continue
                 print('    "%s%s.html?libname=%s&backend=%s&trainsize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
                     (path, lib_list[i], lib_list[i], backend_list[j], trainsize, hiddenlayernum[k], hiddenlayersize[l]), end="")
-                if (count !=  60):
+                if (count != 5 * r3 * r4):
                     print(",")
                 else:
                     print("")
