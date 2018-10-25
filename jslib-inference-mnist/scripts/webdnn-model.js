@@ -11,10 +11,10 @@ async function initModel(){
         console.log("init model");
     }
 
-    let path = LOCALHOST+"/model/webdnn/mnist-" + hiddenLayerNum + "-" + hiddenLayerSize + "/";
+    let path = LOCALHOST+"/model/webdnn/mnist-" + hiddenLayerNum + "-" + hiddenLayerSize;
     let bk;
     if (backend == "cpu"){
-        bk = 'fallback';
+        bk = 'webassembly';
     }else{
         bk = 'webgl';
     }

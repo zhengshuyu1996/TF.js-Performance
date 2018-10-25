@@ -73,4 +73,5 @@ if __name__ == "__main__":
     print("start training...")
     init(args.num, args.size)
     train()
-    tfjs.converters.save_keras_model(model, "mnist-%d-%d" % (args.num, args.size))
+    # tfjs.converters.save_keras_model(model, "mnist-%d-%d" % (args.num, args.size))
+    model.save("mnist-%d-%d.h5" % (args.num, args.size))

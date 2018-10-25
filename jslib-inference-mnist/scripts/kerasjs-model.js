@@ -15,8 +15,8 @@ async function initModel(){
     }
 
     // load models
-    path = LOCALHOST+"/model/kerasjs/mnist-" + hiddenLayerNum + "-" + hiddenLayerSize + ".bin";
-    
+    let path = LOCALHOST+"/model/kerasjs/mnist-" + hiddenLayerNum + "-" + hiddenLayerSize + ".bin";
+    console.log(path)
     let start = new Date();
     model = new KerasJS.Model({
         filepath: path ,
@@ -50,7 +50,7 @@ async function infer(data){
             input: batch.xs.slice(i * INPUT_NODE, (i + 1) * INPUT_NODE)
         }
 
-        if (VERBOSE)
+        if (verbose)
             console.log("Case " + i);
 
         let begin = new Date();
