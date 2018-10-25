@@ -2,6 +2,7 @@
 
 const path = require("path");
 const fs = require("fs");
+const child_process = require("child_process");
 
 const yargs = require("yargs");
 const express = require("express");
@@ -32,31 +33,63 @@ app.get("/getWebpage", (req, resp) => {
 app.use(body_parser.urlencoded({ extended: false }));
 app.use(body_parser.json());
 
+function getGPUProcess(){
+	let result = child_process.spawnSync("nvidia-smi");
+	let lines = result.stdout.toString('utf8').split('\n');
+	let gpu_process = [];
+	let cnt = 0;
+	for (let line of lines){
+		if (cnt == 2){
+			let frags = line.split(" ").filter(frag => frag !== "");
+			if (frags.length == 7){
+				gpu_process.push({
+					pid: parseInt(frags[2]),
+					memory: line[5]
+				});
+			}
+		} else if (line[0] === '|' && line[1] === '=')
+			cnt += 1;
+	}
+	return gpu_process;
+}
+
 let usages = [];
 let message = void 0;
 app.post("/uploadUsage", (req, resp) => {
+	//console.log("hahahaha");
 	const id = req.query.id;
-	let usage;
-	try{
-		usage = JSON.parse(req.body.usage);	
-	} catch (e){
-		console.error(usage);
-		return ;
+	const usage = JSON.parse(req.body.usage);
+	const tmp = {
+		"chrome": usage
+	};
+
+	const proc = usage.find((proc) => proc.type === "gpu");
+	if (proc !== void 0){
+		const procId = proc.osProcessId;
+		//console.log(procId);
+
+		const gpu_process = getGPUProcess();
+		const gproc = gpu_process.find((proc) => proc.pid === procId);
+	
+		tmp.gpu = gproc;
 	}
-	usages.push(usage);
+	usages.push(tmp);
 	resp.end();
 });
 
 app.post("/uploadMessage", (req, resp) => {
-	const id = req.query.id;
+	//const id = req.query.id;
 	message = req.body.message;
-	console.error(message);
+	console.log(message);
+	
+	id = message.split('\t').join(" ");
 	fs.writeFileSync(path.resolve(args.output, `${id}.json`), JSON.stringify(usages));
 	usages.length = 0;
-	fs.writeFileSync(path.resolve(args.output, `${id}.log`), message);
-	message = void 0;
+	//fs.writeFileSync(path.resolve(args.output, `${id}.log`), message);
+	//message = void 0;
+	//console.error("finish");
 	resp.end();
 })
 
 app.listen(args.port, "localhost");
-console.error("started");
+//console.error("started");
