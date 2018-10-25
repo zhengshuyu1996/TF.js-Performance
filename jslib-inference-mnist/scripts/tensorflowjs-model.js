@@ -37,7 +37,7 @@ async function initModel(){
     model.predict(tf.ones([1, INPUT_NODE])).dispose();
     end = new Date();
     if (backend == "gpu")
-        warmupTime = start - end;
+        warmupTime = end - start;
 }
 
 async function infer(data){
