@@ -45,7 +45,7 @@ async function initModel(){
 
     end = new Date();
     if (backend == "gpu")
-        warmupTime = start - end;
+        warmupTime = end - start;
 }
 
 async function infer(data){
