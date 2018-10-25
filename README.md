@@ -1,20 +1,19 @@
 # TF.js-Performance
 Measuring performance of TensorFlow.js on various dimensions
 
-### Lenet-5 on MNIST
+### Finished
 
-Batch size: 64
+- `jslib-training-mnist`
+- `jslib-inference-mnist`
+- `pressure-test`
+- `extension`
 
-Training data set: 60000 pictures with 28*28 pixels
+### To-Do
 
-Epochs: 8
+- `tfjs-inference-keras`
 
-Evaluation size: 1000 (evaluation is done after each epoch)
+- `tfjs-cnn`
 
-| Platform            | API   | Round 1(s) | Round 2(s) | Round 3(s) | Round 4(s) |
-| ------------------- | ----- | ---------- | ---------- | ---------- | ---------- |
-| TensorFlow (Python) | Core  |            |            |            |            |
-| TensorFlow (Python) | Keras |            |            |            |            |
-| TensorFlow.js       | Core  |            |            |            |            |
-| TensorFlow.js       | Keras |            |            |            |            |
+- `tfjs-rnn`
 
+  - lstm
