@@ -8,7 +8,7 @@
 const defaultSettings = {
   uploadServer: "localhost:8001",
   webpageServer: "localhost:8001",
-  firstId: 0, lastId: 30,
+  firstId: 0, lastId: 100,
   timeout: 600000,
 };
 
