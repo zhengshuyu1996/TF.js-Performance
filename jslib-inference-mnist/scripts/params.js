@@ -22,7 +22,7 @@ let hiddenLayerNum;
 
 let verbose = false;
 
-let libList = ["tensorflowjs", "brainjs", "synaptic", "convnetjs"];
+let libList = ["tensorflowjs", "brainjs", "synaptic", "convnetjs", "webdnn", "kerasjs"];
 let backendList = ["cpu", "gpu"];
 
 function getParam(query, key){

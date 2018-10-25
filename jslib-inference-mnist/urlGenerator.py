@@ -1,7 +1,11 @@
 path = "http://localhost:8000/jslib-inference-mnist/"
 
-lib_list = [
-    "tensorflowjs", "convnetjs", "synaptic", "brainjs"
+cpu_list = [
+    "convnetjs", "synaptic", "brainjs"
+]
+
+gpu_list = [
+    "webdnn", "kerasjs", "tensorflowjs"
 ]
 
 backend_list = ["cpu", "gpu"]
@@ -12,7 +16,7 @@ hiddenlayersize = [64, 128, 256]
 
 print("[")
 
-r1 = len(lib_list)
+r1 = len(gpu_list)
 r2 = len(backend_list)
 r3 = len(hiddenlayernum)
 r4 = len(hiddenlayersize)
@@ -22,14 +26,22 @@ for i in range(r1):
     for j in range(r2):
         for k in range(r3):
             for l in range(r4):
-                if lib_list[i] != "tensorflowjs" and backend_list[j] == "gpu":
-                    continue
-                print('    "%s%s.html?libname=%s&backend=%s&infersize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
-                    (path, lib_list[i], lib_list[i], backend_list[j], infersize, hiddenlayernum[k], hiddenlayersize[l]), end="")
-                if (count !=  44):
-                    print(",")
-                else:
-                    print("")
+                print('    "%s%s.html?libname=%s&backend=%s&infersize=%d&hiddenlayernum=%d&hiddenlayersize=%d",' % 
+                    (path, gpu_list[i], gpu_list[i], backend_list[j], infersize, hiddenlayernum[k], hiddenlayersize[l]))
                 count += 1
 
+r1 = len(cpu_list)
+r2 = len(hiddenlayernum)
+r3 = len(hiddenlayersize)
+
+for i in range(r1):
+    for j in range(r2):
+        for k in range(r3):
+            print('    "%s%s.html?libname=%s&backend=cpu&infersize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
+                    (path, cpu_list[i], cpu_list[i], infersize, hiddenlayernum[j], hiddenlayersize[k]), end="")
+            if (count !=  9 * r2 * r3 - 1):
+                print(",")
+            else:
+                print("")
+            count += 1
 print("]")

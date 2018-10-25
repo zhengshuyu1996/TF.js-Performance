@@ -7,6 +7,7 @@ email: xdw@pku.edu.cn
 let model, trainer;
 let loadTime = 0;
 let inferTime = 0;
+let warmupTime = "cpu";
 
 async function initModel(savedModel){
     if (verbose){
@@ -55,7 +56,7 @@ async function infer(data){
         inferTime += end - begin;
     }
 
-    triggerEnd(task + loadTime + "\t" + inferTime);
+    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime);
 }
 
 async function init(model){

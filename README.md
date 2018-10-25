@@ -11,9 +11,7 @@ Measuring performance of TensorFlow.js on various dimensions
 ### To-Do
 
 - `tfjs-inference-keras`
-
 - `tfjs-cnn`
-
 - `tfjs-rnn`
-
   - lstm
+
