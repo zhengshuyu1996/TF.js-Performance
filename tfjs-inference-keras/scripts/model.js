@@ -5,7 +5,7 @@ email: xdw@pku.edu.cn
  */
 
 let model;
-let warmupTime, inferTime=0;
+let warmupTime="cpu", inferTime=0;
 
 async function initData(){
     let offset = tf.scalar(127.5);
@@ -41,11 +41,12 @@ async function initModel(){
     // warm up the model
     statusLog("Warming up");
         
-
-    let begin = new Date();
-    model.predict(tf.zeros([1, 224, 224, 3])).dispose();
-    let end = new Date();
-    warmupTime = end - begin;
+    if (backend == "gpu"){
+        let begin = new Date();
+        model.predict(tf.zeros([1, 224, 224, 3])).dispose();
+        let end = new Date();
+        warmupTime = end - begin;
+    }
 }
 
 async function infer(data){
