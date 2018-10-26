@@ -16,7 +16,7 @@ async function initModel(){
 
     // load models
     let path = LOCALHOST+"/model/kerasjs/mnist-" + hiddenLayerNum + "-" + hiddenLayerSize + ".bin";
-    console.log(path)
+
     let start = new Date();
     model = new KerasJS.Model({
         filepath: path ,
@@ -44,14 +44,18 @@ async function infer(data){
     await triggerStart();
     statusLog("Inferring");
 
-    let batch = data.nextTestBatch(inferSize);
-    for (let i = 0; i < batch.labels.length/OUTPUT_NODE; i++){
+    let size = 100;
+    let batch = data.nextTestBatch(size);
+    let round = 0;
+
+    while(inferTime < totTime){
+        let index = round % size;
         let input = {
-            input: batch.xs.slice(i * INPUT_NODE, (i + 1) * INPUT_NODE)
+            input: batch.xs.slice(index * INPUT_NODE, (index + 1) * INPUT_NODE)
         }
 
         if (verbose)
-            console.log("Case " + i);
+            console.log("Case " + round);
 
         let begin = new Date();
 
@@ -59,8 +63,9 @@ async function infer(data){
         
         let end = new Date();
         inferTime += end - begin;
+        round++;
     }
-    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime);
+    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime/round);
 }
 
 async function init(){

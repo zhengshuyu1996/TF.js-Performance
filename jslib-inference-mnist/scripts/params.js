@@ -16,11 +16,11 @@ const NUM_CHANNELS = 1;
 let libName;
 let task;
 let backend;
-let inferSize;
+let totTime;
 let hiddenLayerSize;
 let hiddenLayerNum;
 
-let verbose = false;
+let verbose = true;
 
 let libList = ["tensorflowjs", "brainjs", "synaptic", "convnetjs", "webdnn", "kerasjs"];
 let backendList = ["cpu", "gpu"];
@@ -37,7 +37,7 @@ function parseArgs(){
 
     libName = getParam(query, "libname");
     backend = getParam(query, "backend");
-    inferSize = parseInt(getParam(query, "infersize"));
+    totTime = parseInt(getParam(query, "processtime"));
     hiddenLayerSize = parseInt(getParam(query, "hiddenlayersize"));
     hiddenLayerNum = parseInt(getParam(query, "hiddenlayernum"));
 
@@ -56,7 +56,7 @@ function parseArgs(){
         return false;
     }
 
-    if (inferSize <= 0 || hiddenLayerSize <= 0 || hiddenLayerNum <= 0){
+    if (totTime <= 0 || hiddenLayerSize <= 0 || hiddenLayerNum <= 0){
         triggerStart();
         triggerEnd("Invalid URI:" + address);
         console.error("Invalid URI:" + address);
@@ -66,8 +66,8 @@ function parseArgs(){
     
 
     // get right task name
-    task = "jslib\tinference\tmnist\t" + libName + "\t" + backend + "\t" 
-    + inferSize + "\t" + hiddenLayerNum + "\t" + hiddenLayerSize + "\t";
+    task = "jslib\tinference\tmnist\t" + libName + "\t" + backend + "\t" + 
+    hiddenLayerNum + "\t" + hiddenLayerSize + "\t";
     document.getElementById("task").innerText = task;
     return true;
 }

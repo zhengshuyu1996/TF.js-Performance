@@ -5,7 +5,7 @@ lib_list = [
 ]
 
 backend_list = ["cpu", "gpu"]
-process_time = 30000
+process_time = 10000
 hiddenlayernum = [1, 2, 4, 8]
 hiddenlayersize = [64, 128, 256]
 

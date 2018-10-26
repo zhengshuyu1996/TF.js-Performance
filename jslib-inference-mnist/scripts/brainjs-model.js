@@ -46,23 +46,27 @@ async function infer(data){
     await triggerStart();
     statusLog("Inferring");
 
-    let batch = await data.nextTestBatch(inferSize);
-    let TestData = getStdInput(batch.xs, batch.labels);
-
-    let i = 0;
-    for (let item in TestData){
+    let size = 100;
+    let batch = data.nextTestBatch(size);
+    let testData = getStdInput(batch.xs, batch.labels);
+    
+    let round = 0;
+    while(inferTime < totTime){
         if (verbose)
-            console.log("Case " + i++);
+            console.log("Case " + round);
 
+        let index = round % size;
         let begin = new Date();
 
+        let item = testData[index];
         model.run(item);
 
         let end = new Date();
         inferTime += end - begin;
+        round++;
     }
 
-    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime);
+    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime/round);
 }
 
 async function init(model){

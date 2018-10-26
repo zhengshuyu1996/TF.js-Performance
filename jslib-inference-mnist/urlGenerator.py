@@ -9,7 +9,7 @@ gpu_list = [
 ]
 
 backend_list = ["cpu", "gpu"]
-infersize = 1000
+processtime = 10000
 hiddenlayernum = [1, 2, 4]
 hiddenlayersize = [64, 128, 256]
 
@@ -26,8 +26,8 @@ for i in range(r1):
     for j in range(r2):
         for k in range(r3):
             for l in range(r4):
-                print('    "%s%s.html?libname=%s&backend=%s&infersize=%d&hiddenlayernum=%d&hiddenlayersize=%d",' % 
-                    (path, gpu_list[i], gpu_list[i], backend_list[j], infersize, hiddenlayernum[k], hiddenlayersize[l]))
+                print('    "%s%s.html?libname=%s&backend=%s&processtime=%d&hiddenlayernum=%d&hiddenlayersize=%d",' % 
+                    (path, gpu_list[i], gpu_list[i], backend_list[j], processtime, hiddenlayernum[k], hiddenlayersize[l]))
                 count += 1
 
 r1 = len(cpu_list)
@@ -37,8 +37,8 @@ r3 = len(hiddenlayersize)
 for i in range(r1):
     for j in range(r2):
         for k in range(r3):
-            print('    "%s%s.html?libname=%s&backend=cpu&infersize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
-                    (path, cpu_list[i], cpu_list[i], infersize, hiddenlayernum[j], hiddenlayersize[k]), end="")
+            print('    "%s%s.html?libname=%s&backend=cpu&processtime=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
+                    (path, cpu_list[i], cpu_list[i], processtime, hiddenlayernum[j], hiddenlayersize[k]), end="")
             if (count !=  9 * r2 * r3 - 1):
                 print(",")
             else:

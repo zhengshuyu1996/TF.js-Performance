@@ -44,26 +44,29 @@ async function infer(data){
     await triggerStart();
     statusLog("Inferring");
 
-    let batch = await data.nextTestBatch(inferSize);
-    let xs = batch.xs;  
-
-    for (let i = 0; i < batch.labels.length/OUTPUT_NODE; i++){
+    let size = 100;
+    let batch = data.nextTestBatch(size);
+    
+    let round = 0;
+    while(inferTime < totTime){
         if (verbose)
-            console.log("Case " + i);
+            console.log("Case " + round);
 
+        let index = round % size;
         let begin = new Date();
 
         let x = new convnetjs.Vol(1, 1, INPUT_NODE);
         for (let j = 0; j < INPUT_NODE; j++){
-            x.set(0, 0, j, xs[i*INPUT_NODE+j]);
+            x.set(0, 0, j, batch.xs[index*INPUT_NODE+j]);
         }
         model.forward(x);
         
         let end = new Date();
         inferTime += end - begin;
+        round++;
     }
 
-    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime);
+    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime/round);
 }
 
 async function init(model){

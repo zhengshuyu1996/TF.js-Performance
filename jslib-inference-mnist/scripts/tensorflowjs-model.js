@@ -44,16 +44,17 @@ async function infer(data){
     await triggerStart();
     statusLog("Inferring");
 
-    let batch = data.nextTestBatch(inferSize);
-    console.log("infer" + inferSize);
-    console.log(batch.xs.length);
+    let size = 100;
+    let batch = data.nextTestBatch(size);
     
-    for (let i = 0; i < batch.xs.length/INPUT_NODE; i++){
-        let input = batch.xs.slice(i * INPUT_NODE, (i + 1) * INPUT_NODE);
+    let round = 0;
+    while(inferTime < totTime){
+        let index = round % size;
+        let input = batch.xs.slice(index * INPUT_NODE, (index + 1) * INPUT_NODE);
         let inputTensor = tf.tensor2d(input, [1, INPUT_NODE]);
         
         if (verbose)
-            console.log("Case " + i);
+            console.log("Case " + round);
 
         let begin = new Date();
 
@@ -62,9 +63,10 @@ async function infer(data){
         let end = new Date();
         
         inferTime += end - begin;
+        round++;
     }
 
-    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime);
+    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime/round);
 }
 
 async function init(){

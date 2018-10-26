@@ -52,18 +52,19 @@ async function infer(data){
     await triggerStart();
     statusLog("Inferring");
 
-    let totTime = 0;
-    let batch = data.nextTestBatch(inferSize);
-
     // get input variable reference
     let x = model.inputs[0];
 
-    let count = 0;
-    for (let i = 0; i < batch.labels.length/OUTPUT_NODE; i++){;
-        let input = batch.xs.slice(i * INPUT_NODE, (i + 1) * INPUT_NODE);
+    let size = 100;
+    let batch = data.nextTestBatch(size);
+    
+    let round = 0;
+    while(inferTime < totTime){
+        let index = round % size;
+        let input = batch.xs.slice(index * INPUT_NODE, (index + 1) * INPUT_NODE);
         
         if (verbose)
-            console.log("Case " + i);
+            console.log("Case " + round);
         let begin = new Date();
 
         x.set(input);
@@ -71,15 +72,9 @@ async function infer(data){
 
         let end = new Date();
         inferTime += end - begin;
-
-        /*let predictlabel = WebDNN.Math.argmax(model.outputs[0])[0];
-        let truth = WebDNN.Math.argmax(
-            batch.labels.slice(i * OUTPUT_NODE, (i + 1) * OUTPUT_NODE)
-            )[0];
-        if (truth === predictlabel)
-            count+=1;*/
+        round++;
     }
-    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime);
+    triggerEnd(task + loadTime + "\t" + warmupTime + "\t" + inferTime/round);
 }
 
 async function init(){
