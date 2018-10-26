@@ -16,8 +16,6 @@ OUTPUT_NODE = 10
 NUM_CHANNELS = 1
 LEARNING_RATE = 0.15
 
-train_size = 0;
-
 # data, split between train and validate sets
 (x_train, y_train), (x_eval, y_eval) = mnist.load_data("mnist")
 x_train = x_train.reshape(x_train.shape[0], INPUT_NODE)
@@ -56,16 +54,16 @@ def init(num, size):
         metrics=["accuracy"]
     )
 
-def train(num, size, train_size):
+def train():
+    print("starting training...")
+    train_size = 640
     train_time = 0
     iter = int(train_size / BATCH_SIZE)
-    #print(iter)
+    print(iter)
 
     for i in range(iter):
         x = x_train[i*64:(i+1)*64]
         y = y_train[i:i+1]
-        print(i)
-        start = time.time()
         model.fit(
             x_train, 
             y_train,
@@ -73,12 +71,25 @@ def train(num, size, train_size):
             batch_size=BATCH_SIZE,
             verbose=0
         )
-        end = time.time()
-        train_time = train_time + end - start
 
-    #print(int(train_time))
+    print("training finished...")
+
+def infer(num, size, infer_size):
+    print("starting inference...")
+    print(infer_size)
+    infer_time = 0 
+    x = np.ones((1, 784), dtype=float)
+    
+    start = time.time()
+    for i in range(infer_size):
+        model.predict(x)
+        x = x + np.ones((1, 784), dtype=float)
+        
+    end = time.time()
+    infer_time = infer_time + end - start
+
     f = open("benchmark.txt", "a")
-    f.write("jslib\ttrain\tmnist\tpython\tcpu\t%d\t%d\t%d\tcpu\t%d\n" % (train_size, num, size, train_time))
+    f.write("jslib\tinfer\tmnist\tpython\tcpu\t%d\t%d\t%d\t0\tcpu\t%d\n" % (infer_size, num, size, infer_time))
     # modify this message when using CUDA
     f.close()
 
@@ -87,11 +98,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Gernerate pretrained DNN Mnist model given hidden layers' number and size.")
     parser.add_argument("-n", "--num", type=int, required=True, help="Number of hidden layers")
     parser.add_argument("-s", "--size", type=int, required=True, help="Size of hidden layers")
-    parser.add_argument("-t", "--train", type=int, required=True, help="Number of training pictures")
+    parser.add_argument("-i", "--infer", type=int, required=True, help="Number of inference pictures")
     args = parser.parse_args()
     print("hidden layer num: " + str(args.num))
     print("hidden layer size: " + str(args.size))
-    print("train size: " + str(args.train))
-    print("start training...")
+    print("infer size: " + str(args.infer))
     init(args.num, args.size)
-    train(args.num, args.size, args.train)
+    train()
+    infer(args.num, args.size, args.infer)
