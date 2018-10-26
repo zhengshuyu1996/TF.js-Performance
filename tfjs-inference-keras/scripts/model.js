@@ -5,7 +5,7 @@ email: xdw@pku.edu.cn
  */
 
 let model;
-let warmupTime;
+let warmupTime, inferTime=0;
 
 async function initData(){
     let offset = tf.scalar(127.5);
@@ -52,17 +52,21 @@ async function infer(data){
     await triggerStart();
     statusLog("Inferring");
 
-    let totTime = 0;
-    for (let i = 0; i < testSize; i++){
+    let round = 0;
+    while(inferTime < totTime){
         if (verbose)
-            console.log("Case" + i);
+            console.log("Case" + round);
+
+        let index = round % DATASIZE;
 
         let begin = new Date();
-        model.predict(data[i%DATASIZE]);
+        model.predict(data[index]);
         let end = new Date();
-        totTime += end - begin;
+        inferTime += end - begin;
+        round++;
     }
-    triggerEnd(task + warmupTime + "\t" + totTime);
+
+    triggerEnd(task + warmupTime + "\t" + inferTime/round);
 }
 
 async function init(){

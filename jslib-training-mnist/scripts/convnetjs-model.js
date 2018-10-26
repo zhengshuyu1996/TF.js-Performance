@@ -65,7 +65,7 @@ async function train(data){
         let labels = getLabel(labelsOneHot);
         
         if (verbose)
-                console.log(i)
+                console.log(round)
         
         for (let j = 0; j < BATCH_SIZE; j++){
             let x = new convnetjs.Vol(1, 1, INPUT_NODE);

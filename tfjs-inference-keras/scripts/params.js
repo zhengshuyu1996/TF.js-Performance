@@ -12,7 +12,7 @@ const LOCALHOST = "http://localhost:8000";
 let picSize;
 let modelName;
 let backend;
-let testSize;
+let totTime;
 let task;// = like "Tfjs\tres50\tcpu\t10000\t";
 let verbose = true;
 
@@ -35,7 +35,7 @@ function parseArgs(){
 
     modelName = getParam(query, "model");
     backend = getParam(query, "backend");
-    testSize = parseInt(getParam(query, "testsize"));
+    totTime = parseInt(getParam(query, "processtime"));
 
     // check whether these params are valid
     if (backendList.indexOf(backend) === -1){
@@ -45,7 +45,7 @@ function parseArgs(){
         return false;
     }
 
-    if (testSize <= 0){
+    if (totTime <= 0){
         triggerStart();
         triggerEnd("Invalid URI:" + address);
         console.error("Invalid URI:" + address);
@@ -64,7 +64,7 @@ function parseArgs(){
     }
 
     // get right task name
-    task = "tfjs\tinference\tkeras\t" + modelName + "\t" + backend + "\t" + testSize + "\t";
+    task = "tfjs\tinference\tkeras\t" + modelName + "\t" + backend + "\t";
     document.getElementById("task").innerText = task;
     return true;
 }

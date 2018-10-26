@@ -14,7 +14,7 @@ model_list = [
 
 backend_list = ["cpu", "gpu"]
 
-testsize = 15
+infer_time = 60000
 
 print("[")
 
@@ -30,8 +30,8 @@ for i in range(r1):
                 testsize = 1000
             else:
                 testsize = 15
-            print('    "%s?model=%s&backend=%s&testsize=%d"' % 
-                    (html_list[i], model_list[j], backend_list[k], testsize), end="")
+            print('    "%s?model=%s&backend=%s&processtime=%d"' % 
+                    (html_list[i], model_list[j], backend_list[k], infer_time), end="")
             if (count != r1 * r2 * r3 - 1):
                 print(",")
             else:
