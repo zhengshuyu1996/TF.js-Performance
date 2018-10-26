@@ -7,9 +7,14 @@ model_list = [
     "mobilenetv2", "resnet50", "vgg19", "xception", "inceptionv3", "inceptionresnetv2"
 ];
 
+model_list = [
+    "densenet121",
+    "mobilenetv2", "resnet50", "xception", "inceptionv3", "inceptionresnetv2"
+]; # others nasnetlarge mobilenet desenet169 vgg16/19 desnet169 bug?
+
 backend_list = ["cpu", "gpu"]
 
-testsize = 2000
+testsize = 15
 
 print("[")
 
@@ -21,6 +26,10 @@ count = 0
 for i in range(r1):
     for j in range(r2):
         for k in range(r3):
+            if backend_list[k] == "gpu":
+                testsize = 1000
+            else:
+                testsize = 15
             print('    "%s?model=%s&backend=%s&testsize=%d"' % 
                     (html_list[i], model_list[j], backend_list[k], testsize), end="")
             if (count != r1 * r2 * r3 - 1):

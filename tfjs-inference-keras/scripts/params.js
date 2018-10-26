@@ -19,7 +19,7 @@ let verbose = true;
 let backendList = ["cpu", "gpu"];
 let model224List = [
     "densenet121", "mobilenet", "nasnetlarge", "vgg16", "densenet169",
-    "mobilenetv2", "resnet50", "vgg19"
+    "mobilenetv2", "resnet50", "vgg19", "nasnetmobile"
 ];
 let model299List = ["xception", "inceptionv3", "inceptionresnetv2"];
 
