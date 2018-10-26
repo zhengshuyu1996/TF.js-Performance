@@ -41,7 +41,7 @@ function parseArgs(){
 
     libName = getParam(query, "libname");
     backend = getParam(query, "backend");
-    trainTime = parseInt(getParam(query, "traintime"));
+    trainTime = parseInt(getParam(query, "processtime"));
     hiddenLayerSize = parseInt(getParam(query, "hiddenlayersize"));
     hiddenLayerNum = parseInt(getParam(query, "hiddenlayernum"));
     trainBatch = trainSize / BATCH_SIZE;
