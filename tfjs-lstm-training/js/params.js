@@ -1,12 +1,14 @@
 
 // args to be extracted from url
-let lstmLayerSizes;
+let lstmLayerSizes; 
 let backend;
 let numEpochs = 1;
 let examplesPerEpoch = 2048;
 let batchSize = 128;
 let validationSplit = 0;
 let learningRate = 1e-2;
+let sampleLen = 40;
+let sampleStep = 3;
 
 let task;
 
@@ -66,6 +68,14 @@ function parseArgs(){
 
     if (getParam(query, "learningRate")) {
         learningRate = getParam(query, "learningRate");
+    }
+
+    if (getParam(query, "sampleLen")) {
+        sampleLen = getParam(query, "lsampleLen");
+    }
+
+    if (getParam(query, "sampleStep")) {
+        sampleStep = getParam(query, "sampleStep");
     }
 
     // get right task name

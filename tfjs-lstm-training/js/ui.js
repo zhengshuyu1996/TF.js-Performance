@@ -23,9 +23,6 @@ function triggerEnd(msg){
 const testText = document.getElementById('test-text');
 const appStatus = document.getElementById('app-status');
 
-const sampleLen = 40;
-const sampleStep = 3;
-
 // Module-global instance of TextData.
 let textData;
 
