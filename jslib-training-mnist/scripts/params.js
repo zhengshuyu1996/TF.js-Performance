@@ -18,7 +18,7 @@ const TEST_SIZE = 1000;
 let libName;
 let task;
 let backend;
-let trainSize;
+let trainTime;
 let hiddenLayerSize;
 let hiddenLayerNum;
 
@@ -41,7 +41,7 @@ function parseArgs(){
 
     libName = getParam(query, "libname");
     backend = getParam(query, "backend");
-    trainSize = parseInt(getParam(query, "trainsize"));
+    trainTime = parseInt(getParam(query, "traintime"));
     hiddenLayerSize = parseInt(getParam(query, "hiddenlayersize"));
     hiddenLayerNum = parseInt(getParam(query, "hiddenlayernum"));
     trainBatch = trainSize / BATCH_SIZE;

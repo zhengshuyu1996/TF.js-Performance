@@ -43,8 +43,9 @@ async function train(data){
     statusLog("Training");
 
     let totTime = 0;
+    let round = 0;
 
-    for (let i = 0; i < trainBatch; i++){
+    while (totTime < trainTime){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
         let trainData = getStdInput(batch.xs, batch.labels);
 
@@ -63,9 +64,10 @@ async function train(data){
         
         let end = new Date();
         totTime += end - begin;
+        round++;
     }
 
-    triggerEnd(task + totTime);
+    triggerEnd(task + totTime/round);
 
     if(dotest){
         // test procedure

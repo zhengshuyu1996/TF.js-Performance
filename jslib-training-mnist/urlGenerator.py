@@ -5,7 +5,7 @@ lib_list = [
 ]
 
 backend_list = ["cpu", "gpu"]
-trainsize = 640
+process_time = 30000
 hiddenlayernum = [1, 2, 4, 8]
 hiddenlayersize = [64, 128, 256]
 
@@ -24,9 +24,9 @@ for i in range(r1):
             for l in range(r4):
                 if lib_list[i] != "tensorflowjs" and backend_list[j] == "gpu":
                     continue
-                print('    "%s%s.html?libname=%s&backend=%s&trainsize=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
-                    (path, lib_list[i], lib_list[i], backend_list[j], trainsize, hiddenlayernum[k], hiddenlayersize[l]), end="")
-                if (count != 5 * r3 * r4):
+                print('    "%s%s.html?libname=%s&backend=%s&processtime=%d&hiddenlayernum=%d&hiddenlayersize=%d"' % 
+                    (path, lib_list[i], lib_list[i], backend_list[j], process_time, hiddenlayernum[k], hiddenlayersize[l]), end="")
+                if (count != 5 * r3 * r4 - 1):
                     print(",")
                 else:
                     print("")

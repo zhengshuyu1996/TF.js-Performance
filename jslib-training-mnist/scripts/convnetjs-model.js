@@ -57,7 +57,8 @@ async function train(data){
 
     let totTime = 0;
 
-    for (let i = 0; i < trainBatch; i++){
+    let round = 0;
+    while (totTime < trainTime){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
         let xs = batch.xs;
         let labelsOneHot = batch.labels;
@@ -85,9 +86,10 @@ async function train(data){
                 //console.log('Batch #' + i + "    Loss: " + (loss/BATCH_SIZE).toFixed(3));
             //}
         }
+        round++;
     }
 
-    triggerEnd(task + totTime);
+    triggerEnd(task + totTime/round);
 
     if (dotest){
         statusLog("Testing");

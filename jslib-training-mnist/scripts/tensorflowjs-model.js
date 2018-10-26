@@ -58,7 +58,8 @@ async function train(data){
 
     let totTime = 0;
 
-    for (let i = 0; i < trainBatch; i++){
+    let round = 0;
+    while (totTime < trainTime){
         let batch = await data.nextTrainBatch(BATCH_SIZE);
 
         let begin = new Date();
@@ -79,12 +80,13 @@ async function train(data){
         totTime += end - begin;
 
         if (verbose){
-            console.log('Batch #' + i + "    Loss: " + loss.toFixed(3) +
+            console.log('Batch #' + round + "    Loss: " + loss.toFixed(3) +
                 "    Accuracy: " + accuracy.toFixed(3));
         }
+        round++;
     }
 
-    triggerEnd(task + totTime);
+    triggerEnd(task + totTime/round);
 
     if (dotest){
         statusLog("Testing");

@@ -21,14 +21,14 @@ Structure:
 
 ## URL
 
-example: `http://localhost:8000/jslib-training-mnist/brainjs.html?libname=brainjs&backend=cpu&infersize=3200&hiddenlayernum=1&hiddenlayersize=64`
+example: `http://localhost:8000/jslib-training-mnist/brainjs.html?libname=brainjs&backend=cpu&processTime=30000&hiddenlayernum=1&hiddenlayersize=64`
 
 1. lib
 2. backend
-3. trainsize
+3. processTime
 4. hiddenlayernum
 5. hiddenlayersize
 
 ## Message
 
-`jslib training mnist libName backend inferSize hiddenLayerNum hiddenLayerSize totTime`
+`jslib training mnist libName backend inferSize hiddenLayerNum hiddenLayerSize avgTime`
