@@ -31,4 +31,4 @@ example: `http://localhost:8000/jslib-training-mnist/brainjs.html?libname=brainj
 
 ## Message
 
-`jslib training mnist libName backend inferSize hiddenLayerNum hiddenLayerSize avgTime`
+`jslib training mnist libName backend hiddenLayerNum hiddenLayerSize avgTime`

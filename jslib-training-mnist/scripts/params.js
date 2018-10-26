@@ -44,7 +44,6 @@ function parseArgs(){
     trainTime = parseInt(getParam(query, "processtime"));
     hiddenLayerSize = parseInt(getParam(query, "hiddenlayersize"));
     hiddenLayerNum = parseInt(getParam(query, "hiddenlayernum"));
-    trainBatch = trainSize / BATCH_SIZE;
 
 
     // check whether these params are valid
@@ -62,7 +61,7 @@ function parseArgs(){
         return false;
     }
 
-    if (trainSize <= 0 || hiddenLayerSize <= 0 || hiddenLayerNum <= 0){
+    if (trainTime <= 0 || hiddenLayerSize <= 0 || hiddenLayerNum <= 0){
         triggerStart();
         triggerEnd("Invalid URI:" + address);
         console.error("Invalid URI:" + address);
@@ -73,7 +72,7 @@ function parseArgs(){
 
     // get right task name
     task = "jslib\ttraining\tmnist\t" + libName + "\t" + backend + "\t" 
-    + trainSize + "\t" + hiddenLayerNum + "\t" + hiddenLayerSize + "\t";
+     + hiddenLayerNum + "\t" + hiddenLayerSize + "\t";
     document.getElementById("task").innerText = task;
     return true;
 }
