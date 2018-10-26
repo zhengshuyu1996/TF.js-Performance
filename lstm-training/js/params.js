@@ -7,6 +7,9 @@ let examplesPerEpoch = 2048;
 let batchSize = 128;
 let validationSplit = 0;
 let learningRate = 1e-2;
+let sampleLen = 40;
+let sampleStep = 3;
+let timeLimit = 10000;
 
 let task;
 
@@ -66,6 +69,14 @@ function parseArgs(){
 
     if (getParam(query, "learningRate")) {
         learningRate = getParam(query, "learningRate");
+    }
+
+    if (getParam(query, "sampleLen")) {
+        sampleLen = getParam(query, "sampleLen");
+    }
+
+    if (getParam(query, "sampleStep")) {
+        sampleStep = getParam(query, "sampleStep");
     }
 
     // get right task name
