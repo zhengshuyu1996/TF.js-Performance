@@ -3,11 +3,11 @@ path = "http://localhost:8000/tfjs-cnn-mnist/tensorflowjs.html"
 lib = "tensorflowjs";
 
 backend_list = ["cpu", "gpu"]
-train_time = 1000
+train_time = 10000
 infer_time = 1000
-units = [1, 2, 4, 8, 16]
-filters = [8, 16, 32, 64]
-batchsize = [32, 64, 128]
+units = [1, 2, 4, 8]
+filters = [8, 16, 32]
+batchsize = [8, 16, 32]
 
 
 print("[")

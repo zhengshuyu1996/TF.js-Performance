@@ -2,9 +2,9 @@ import os
 
 # trainsize = 6400
 # infersize = 10000
-units = [1, 2, 4, 8, 16]
-filters = [8, 16, 32, 64]
-batchsize = [32, 64, 128]
+units = [1, 2, 4, 8]
+filters = [8, 16, 32]
+batchsize = [8, 16, 32]
 
 for i in units:
     for j in filters:
