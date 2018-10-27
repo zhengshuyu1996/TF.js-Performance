@@ -16,8 +16,6 @@ OUTPUT_NODE = 10
 NUM_CHANNELS = 1
 LEARNING_RATE = 0.15
 
-train_size = 0;
-
 # data, split between train and validate sets
 (x_train, y_train), (x_eval, y_eval) = mnist.load_data("mnist")
 x_train = x_train.reshape(x_train.shape[0], INPUT_NODE)
@@ -57,7 +55,7 @@ def init(num, size):
     )
 
 def train(num, size, train_size):
-    train_time = 0
+    train_time = 0.0
     iter = int(train_size / BATCH_SIZE)
     #print(iter)
 
@@ -67,8 +65,8 @@ def train(num, size, train_size):
         print(i)
         start = time.time()
         model.fit(
-            x_train, 
-            y_train,
+            x, 
+            y,
             epochs=1,
             batch_size=BATCH_SIZE,
             verbose=0
@@ -78,8 +76,9 @@ def train(num, size, train_size):
 
     #print(int(train_time))
     f = open("benchmark.txt", "a")
-    f.write("jslib\ttrain\tmnist\tpython\tcpu\t%d\t%d\t%d\tcpu\t%d\n" % (train_size, num, size, train_time))
+    f.write("jslib\ttrain\tmnist\tpython\tcpu\t%d\t%d\tcpu\t%f\n" % (num, size, train_time * 1000 / train_size))
     # modify this message when using CUDA
+    # time s => ms
     f.close()
 
 

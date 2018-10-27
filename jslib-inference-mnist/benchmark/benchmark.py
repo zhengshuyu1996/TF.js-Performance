@@ -65,8 +65,8 @@ def train():
         x = x_train[i*64:(i+1)*64]
         y = y_train[i:i+1]
         model.fit(
-            x_train, 
-            y_train,
+            x, 
+            y,
             epochs=1,
             batch_size=BATCH_SIZE,
             verbose=0
@@ -77,7 +77,7 @@ def train():
 def infer(num, size, infer_size):
     print("starting inference...")
     print(infer_size)
-    infer_time = 0 
+    infer_time = 0.0
     x = np.ones((1, 784), dtype=float)
     
     start = time.time()
@@ -89,7 +89,7 @@ def infer(num, size, infer_size):
     infer_time = infer_time + end - start
 
     f = open("benchmark.txt", "a")
-    f.write("jslib\tinfer\tmnist\tpython\tcpu\t%d\t%d\t%d\t0\tcpu\t%d\n" % (infer_size, num, size, infer_time))
+    f.write("jslib\tinfer\tmnist\tpython\tcpu\t%d\t%d\t0\tcpu\t%f\n" % (num, size, infer_time * 1000 / infer_size))
     # modify this message when using CUDA
     f.close()
 
