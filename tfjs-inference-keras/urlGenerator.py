@@ -3,13 +3,7 @@ html_list = [
 ]
 
 model_list = [
-    "densenet121", "mobilenet", "nasnetlarge", "vgg16", "densenet169",
-    "mobilenetv2", "resnet50", "vgg19", "xception", "inceptionv3", "inceptionresnetv2"
-];
-
-model_list = [
-    "densenet121",
-    "mobilenetv2", "resnet50", "xception", "inceptionv3", "inceptionresnetv2"
+    "densenet121", "mobilenetv2", "resnet50", "xception", "inceptionv3"
 ]; # others nasnetlarge mobilenet desenet169 vgg16/19 desnet169 bug?
 
 backend_list = ["cpu", "gpu"]
