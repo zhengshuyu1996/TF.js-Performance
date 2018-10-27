@@ -61,7 +61,7 @@ def train(num, size, train_size):
 
     for i in range(iter):
         x = x_train[i*64:(i+1)*64]
-        y = y_train[i:i+1]
+        y = y_train[i*64:(i+1)*64]
         print(i)
         start = time.time()
         model.fit(
