@@ -44,7 +44,7 @@ function getGPUProcess(){
 			if (frags.length == 7){
 				gpu_process.push({
 					pid: parseInt(frags[2]),
-					memory: line[5]
+					memory: frags[5]
 				});
 			}
 		} else if (line[0] === '|' && line[1] === '=')

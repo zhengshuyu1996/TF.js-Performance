@@ -57,7 +57,7 @@ async function train(data){
         let trainData = getStdInput(batch.xs, batch.labels);
 
         if (verbose)
-            console.log(i);
+            console.log(round);
 
         let begin = new Date();
 
