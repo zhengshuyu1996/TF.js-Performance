@@ -2,13 +2,10 @@
 // args to be extracted from url
 let lstmLayerSizes;
 let backend;
-let numEpochs = 1;
-let examplesPerEpoch = 2048;
-let batchSize = 128;
-let validationSplit = 0;
-let learningRate = 1e-2;
 let sampleLen = 40;
 let sampleStep = 3;
+let generateLength = 200;
+let temperature = 0.75;
 let timeLimit = 10000;
 
 let task;
@@ -50,29 +47,13 @@ function parseArgs(){
         console.error("Invalid URI:" + address);
         return false;
     }
-
-    if (getParam(query, "processtime")) {
-        timeLimit = getParam(query, "processtime");
-    }
     
-    if (getParam(query, "numEpochs")) {
-        numEpochs = getParam(query, "numEpochs");
+    if (getParam(query, "temperature")) {
+        temperature = getParam(query, "temperature");
     }
 
-    if (getParam(query, "examplesPerEpoch")) {
-        examplesPerEpoch = getParam(query, "examplesPerEpoch");
-    }
-
-    if (getParam(query, "batchSize")) {
-        batchSize = getParam(query, "batchSize");
-    }
-
-    if (getParam(query, "validation")) {
-        validation = getParam(query, "validation");
-    }
-
-    if (getParam(query, "learningRate")) {
-        learningRate = getParam(query, "learningRate");
+    if (getParam(query, "generateLength")) {
+        generateLength = getParam(query, "generateLength");
     }
 
     if (getParam(query, "sampleLen")) {
@@ -84,9 +65,9 @@ function parseArgs(){
     }
 
     // get right task name
-    task = "jslib\ttraining\ttask=LSTMTextGeneration\tlib=tensorflowjs\tbackend=" + backend + "\tlayersizes=" 
-    + getParam(query, "layersizes") + "\texamplesPerEpoch=" + examplesPerEpoch + "\tbatchSize=" + batchSize
-    + "\tsampleLen=" + sampleLen + "\tsampleStep" + sampleStep + "\t";
+    task = "jslib\tinference\ttask=LSTMTextGeneration\tlib=tensorflowjs\tbackend=" + backend + "\tlayersizes=" 
+    + getParam(query, "layersizes") + "\tsampleLen=" + sampleLen + "\tsampleStep=" + sampleStep + "\tgenerateLength="
+    + generateLength + "\t";
     document.getElementById("task").innerText = task;
     return true;
 

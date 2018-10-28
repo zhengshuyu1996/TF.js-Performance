@@ -1,21 +1,4 @@
 /**
- * @license
- * Copyright 2018 Google LLC. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * =============================================================================
- */
-
-/**
  * TensorFlow.js Example: LSTM Text Generation.
  *
  * Inspiration comes from:
@@ -25,12 +8,6 @@
  * - Andrej Karpathy. "The Unreasonable Effectiveness of Recurrent Neural
  * Networks" http://karpathy.github.io/2015/05/21/rnn-effectiveness/
  */
-
-// import * as tf from '@tensorflow/tfjs';
-
-// import {TextData} from './data';
-// import {onTextGenerationBegin, onTextGenerationChar, onTrainBatchEnd, onTrainBegin, onTrainEpochEnd, setUpUI} from './ui';
-// import {sample} from './utils';
 
 /**
  * Class that manages LSTM-based text generation.
@@ -63,6 +40,15 @@ class LSTMTextGenerator {
   createModel(lstmLayerSizes) {
     if (!Array.isArray(lstmLayerSizes)) {
       lstmLayerSizes = [lstmLayerSizes];
+    }
+
+    if (backend == "cpu")
+        tf.setBackend("cpu");
+    else
+        tf.setBackend("webgl");
+    if (verbose){
+        console.log(tf.getBackend());
+        console.log("init model");
     }
 
     this.model = tf.sequential();
@@ -146,7 +132,7 @@ class LSTMTextGenerator {
    * @returns {string} The generated text.
    */
   async generateText(sentenceIndices, length, temperature) {
-    onTextGenerationBegin();
+    await onTextGenerationBegin();
     const temperatureScalar = tf.scalar(temperature);
 
     let generated = '';
@@ -176,110 +162,19 @@ class LSTMTextGenerator {
       output.dispose();
     }
     temperatureScalar.dispose();
+    await onTextGenerationEnd();
     return generated;
   }
 };
 
-/**
- * A subclass of LSTMTextGenerator that supports model saving and loading.
- *
- * The model is saved to and loaded from browser's IndexedDB.
- */
-class SaveableLSTMTextGenerator extends LSTMTextGenerator {
-  /**
-   * Constructor of NeuralNetworkTextGenerator.
-   *
-   * @param {TextData} textData An instance of `TextData`.
-   */
-  constructor(textData) {
-    super(textData);
-    this.modelIdentifier_ = textData.dataIdentifier();
-    this.MODEL_SAVE_PATH_PREFIX_ = 'indexeddb://lstm-text-generation';
-    this.modelSavePath_ =
-        `${this.MODEL_SAVE_PATH_PREFIX_}/${this.modelIdentifier_}`;
-  }
 
-  /**
-   * Get model identifier.
-   *
-   * @returns {string} The model identifier.
-   */
-  modelIdentifier() {
-    return this.modelIdentifier_;
-  }
+async function main () {
+  let argsStatus = parseArgs(); // defined in params.js
+  if (argsStatus == false)
+      return;
 
-  /**
-   * Create LSTM model if it is not saved locally; load it if it is.
-   *
-   * @param {number | number[]} lstmLayerSizes Sizes of the LSTM layers, as a
-   *   number or an non-empty array of numbers.
-   */
-  async loadModel(lstmLayerSizes) {
-    const modelsInfo = await tf.io.listModels();
-    if (this.modelSavePath_ in modelsInfo) {
-      console.log(`Loading existing model...`);
-      this.model = await tf.loadModel(this.modelSavePath_);
-      console.log(`Loaded model from ${this.modelSavePath_}`);
-    } else {
-      throw new Error(
-          `Cannot find model at ${this.modelSavePath_}. ` +
-          `Creating model from scratch.`);
-    }
-  }
-
-  /**
-   * Save the model in IndexedDB.
-   *
-   * @returns ModelInfo from the saving, if the saving succeeds.
-   */
-  async saveModel() {
-    if (this.model == null) {
-      throw new Error('Cannot save model before creating model.');
-    } else {
-      return await this.model.save(this.modelSavePath_);
-    }
-  }
-
-  /**
-   * Remove the locally saved model from IndexedDB.
-   */
-  async removeModel() {
-    if (await this.checkStoredModelStatus() == null) {
-      throw new Error(
-          'Cannot remove locally saved model because it does not exist.');
-    }
-    return await tf.io.removeModel(this.modelSavePath_);
-  }
-
-  /**
-   * Check the status of locally saved model.
-   *
-   * @returns If the locally saved model exists, the model info as a JSON
-   *   object. Else, `undefined`.
-   */
-  async checkStoredModelStatus() {
-    const modelsInfo = await tf.io.listModels();
-    return modelsInfo[this.modelSavePath_];
-  }
-
-  /**
-   * Get a representation of the sizes of the LSTM layers in the model.
-   *
-   * @returns {number | number[]} The sizes (i.e., number of units) of the
-   *   LSTM layers that the model contains. If there is only one LSTM layer, a
-   *   single number is returned; else, an Array of numbers is returned.
-   */
-  lstmLayerSizes() {
-    if (this.model == null) {
-      throw new Error('Create model first.');
-    }
-    const numLSTMLayers = this.model.layers.length - 1;
-    const layerSizes = [];
-    for (let i = 0; i < numLSTMLayers; ++i) {
-      layerSizes.push(this.model.layers[i].units);
-    }
-    return layerSizes.length === 1 ? layerSizes[0] : layerSizes;
-  }
+  fetchData();
 }
 
-setUpUI();
+main();
+
