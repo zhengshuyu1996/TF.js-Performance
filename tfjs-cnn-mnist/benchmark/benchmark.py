@@ -79,7 +79,7 @@ def train(train_size, batch_size):
     for i in range(iter):
         x = x_train[i*batch_size:(i+1)*batch_size]
         y = y_train[i*batch_size:(i+1)*batch_size]
-        start = time.time()
+        start = time.clock()
         model.fit(
             x, 
             y,
@@ -87,7 +87,7 @@ def train(train_size, batch_size):
             batch_size=batch_size,
             verbose=0
         )
-        end = time.time()
+        end = time.clock()
         train_time = train_time + end - start
 
     train_time = float(train_time) / iter
@@ -98,12 +98,12 @@ def infer(infer_size):
     print("starting inference...")
     x = np.ones((1, IMAGE_LENGTH, IMAGE_LENGTH, 1), dtype=float)
     
-    start = time.time()
+    start = time.clock()
     for i in range(infer_size):
         model.predict(x)
         x = x + np.ones((1, IMAGE_LENGTH, IMAGE_LENGTH, 1), dtype=float)
         
-    end = time.time()
+    end = time.clock()
     infer_time = infer_time + end - start
     infer_time = float(infer_time) / infer_size
 

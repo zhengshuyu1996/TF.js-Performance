@@ -63,7 +63,7 @@ def train(num, size, train_size):
         x = x_train[i*64:(i+1)*64]
         y = y_train[i*64:(i+1)*64]
         print(i)
-        start = time.time()
+        start = time.clock()
         model.fit(
             x, 
             y,
@@ -71,7 +71,7 @@ def train(num, size, train_size):
             batch_size=BATCH_SIZE,
             verbose=0
         )
-        end = time.time()
+        end = time.clock()
         train_time = train_time + end - start
 
     #print(int(train_time))

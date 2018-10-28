@@ -80,12 +80,12 @@ def infer(num, size, infer_size):
     infer_time = 0.0
     x = np.ones((1, 784), dtype=float)
     
-    start = time.time()
+    start = time.clock()
     for i in range(infer_size):
         model.predict(x)
         x = x + np.ones((1, 784), dtype=float)
         
-    end = time.time()
+    end = time.clock()
     infer_time = infer_time + end - start
 
     f = open("benchmark.txt", "a")
