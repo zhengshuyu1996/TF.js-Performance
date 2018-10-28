@@ -55,7 +55,7 @@ async function onTextGenerationBegin() {
 
 async function onTextGenerationEnd() {
   endTime = new Date().getTime();
-  await triggerEnd(task + "inferenceTimePerChar=" + (endTime - startTime)/generateLength);
+  await triggerEnd(task + (endTime - startTime)/generateLength);
 }
 
 /**

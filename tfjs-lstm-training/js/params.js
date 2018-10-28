@@ -84,9 +84,9 @@ function parseArgs(){
     }
 
     // get right task name
-    task = "jslib\ttraining\ttask=LSTMTextGeneration\tlib=tensorflowjs\tbackend=" + backend + "\tlayersizes=" 
+    task = "jslib\ttraining\tLSTMTextGeneration\ttensorflowjs\t" + backend + "\t" 
     + getParam(query, "layersizes") + "\texamplesPerEpoch=" + examplesPerEpoch + "\tbatchSize=" + batchSize
-    + "\tsampleLen=" + sampleLen + "\tsampleStep" + sampleStep + "\t";
+    + "\t";
     document.getElementById("task").innerText = task;
     return true;
 

@@ -114,7 +114,8 @@ class LSTMTextGenerator {
             onTrainBatchEnd(
                 logs.loss, ++batchCount / totalBatches, examplesPerSec);
             if (t1 - start >= timeLimit) {
-              await triggerEnd(task + "trainingTimePerEpoch=" + (t1 - start)/batchCount);
+              await triggerEnd(task + (t1 - start)/batchCount);
+              // traingin time per epoch
             }
             t = t1;
           },
