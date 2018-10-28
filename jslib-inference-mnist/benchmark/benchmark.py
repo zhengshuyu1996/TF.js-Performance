@@ -59,7 +59,6 @@ def train():
     train_size = 640
     train_time = 0
     iter = int(train_size / BATCH_SIZE)
-    print(iter)
 
     for i in range(iter):
         x = x_train[i*64:(i+1)*64]
@@ -76,7 +75,6 @@ def train():
 
 def infer(num, size, infer_size):
     print("starting inference...")
-    print(infer_size)
     infer_time = 0.0
     x = np.ones((1, 784), dtype=float)
     

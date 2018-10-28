@@ -57,12 +57,10 @@ def init(num, size):
 def train(num, size, train_size):
     train_time = 0.0
     iter = int(train_size / BATCH_SIZE)
-    #print(iter)
 
     for i in range(iter):
         x = x_train[i*64:(i+1)*64]
         y = y_train[i*64:(i+1)*64]
-        print(i)
         start = time.clock()
         model.fit(
             x, 
@@ -74,7 +72,6 @@ def train(num, size, train_size):
         end = time.clock()
         train_time = train_time + end - start
 
-    #print(int(train_time))
     f = open("benchmark.txt", "a")
     f.write("jslib\ttrain\tmnist\tpython\tcpu\t%d\t%d\tcpu\t%f\n" % (num, size, train_time * 1000 / train_size))
     # modify this message when using CUDA
