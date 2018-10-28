@@ -97,6 +97,7 @@ class LSTMTextGenerator {
 
     await triggerStart();
     let t = new Date().getTime();
+    let start = new Date().getTime();
 
     for (let i = 0; i < numEpochs; ++i) {
       const [xs, ys] = this.textData_.nextDataEpoch(examplesPerEpoch);
@@ -110,9 +111,12 @@ class LSTMTextGenerator {
             // examples per second.
             const t1 = new Date().getTime();
             const examplesPerSec = batchSize / ((t1 - t) / 1e3);
-            t = t1;
             onTrainBatchEnd(
                 logs.loss, ++batchCount / totalBatches, examplesPerSec);
+            if (t1 - start >= timeLimit) {
+              await triggerEnd(task + "trainingTimePerEpoch=" + (t1 - start)/batchCount);
+            }
+            t = t1;
           },
           onEpochEnd: async (epoch, logs) => {
             onTrainEpochEnd(logs.val_loss);
@@ -123,7 +127,7 @@ class LSTMTextGenerator {
       ys.dispose();
     }
 
-    triggerEnd(task + t);
+    // triggerEnd(task + t);
   }
 
   /**
