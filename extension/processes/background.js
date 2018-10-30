@@ -130,12 +130,12 @@ class Recording{
     const url = `http://${uploadServer}/uploadUsage?id=${title}`;
     const xhr = new XMLHttpRequest();
     xhr.open("POST", url);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Content-type', 'application/json');
     return await new Promise((resolve, reject) => {
       xhr.onreadystatechange = () => {
         resolve();
       };
-      xhr.send(`usage=${usage}`);
+      xhr.send(usage);
     });
   }
 }

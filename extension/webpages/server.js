@@ -56,9 +56,8 @@ function getGPUProcess(){
 let usages = [];
 let message = void 0;
 app.post("/uploadUsage", (req, resp) => {
-	//console.log("hahahaha");
 	const id = req.query.id;
-	const usage = JSON.parse(req.body.usage);
+	const usage = req.body;
 	const tmp = {
 		"chrome": usage
 	};
