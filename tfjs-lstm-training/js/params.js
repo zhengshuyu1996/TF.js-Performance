@@ -85,7 +85,7 @@ function parseArgs(){
 
     // get right task name
     task = "jslib\ttraining\tLSTMTextGeneration\ttensorflowjs\t" + backend + "\t" 
-    + getParam(query, "layersizes") + "\texamplesPerEpoch=" + examplesPerEpoch + "\tbatchSize=" + batchSize
+    + getParam(query, "layersizes") + "\t" + examplesPerEpoch + "\tb" + batchSize
     + "\t";
     document.getElementById("task").innerText = task;
     return true;
