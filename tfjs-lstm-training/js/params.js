@@ -52,40 +52,40 @@ function parseArgs(){
     }
 
     if (getParam(query, "processtime")) {
-        timeLimit = getParam(query, "processtime");
+        timeLimit = parseInt(getParam(query, "processtime"));
     }
     
     if (getParam(query, "numEpochs")) {
-        numEpochs = getParam(query, "numEpochs");
+        numEpochs = parseInt(getParam(query, "numEpochs"));
     }
 
     if (getParam(query, "examplesPerEpoch")) {
-        examplesPerEpoch = getParam(query, "examplesPerEpoch");
+        examplesPerEpoch = parseInt(getParam(query, "examplesPerEpoch"));
     }
 
     if (getParam(query, "batchSize")) {
-        batchSize = getParam(query, "batchSize");
+        batchSize = parseInt(getParam(query, "batchSize"));
     }
 
     if (getParam(query, "validation")) {
-        validation = getParam(query, "validation");
+        validation = parseFloat(getParam(query, "validation"));
     }
 
     if (getParam(query, "learningRate")) {
-        learningRate = getParam(query, "learningRate");
+        learningRate = parseFloat(getParam(query, "learningRate"));
     }
 
     if (getParam(query, "sampleLen")) {
-        sampleLen = getParam(query, "sampleLen");
+        sampleLen = parseInt(getParam(query, "sampleLen"));
     }
 
     if (getParam(query, "sampleStep")) {
-        sampleStep = getParam(query, "sampleStep");
+        sampleStep = parseInt(getParam(query, "sampleStep"));
     }
 
     // get right task name
     task = "jslib\ttraining\tLSTMTextGeneration\ttensorflowjs\t" + backend + "\t" 
-    + getParam(query, "layersizes") + "\t" + examplesPerEpoch + "\tb" + batchSize
+    + getParam(query, "layersizes") + "\t" + examplesPerEpoch + "\t" + batchSize
     + "\t";
     document.getElementById("task").innerText = task;
     return true;

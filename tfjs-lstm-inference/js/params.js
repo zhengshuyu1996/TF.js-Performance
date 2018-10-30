@@ -49,19 +49,19 @@ function parseArgs(){
     }
     
     if (getParam(query, "temperature")) {
-        temperature = getParam(query, "temperature");
+        temperature = parseFloat(getParam(query, "temperature"));
     }
 
     if (getParam(query, "generateLength")) {
-        generateLength = getParam(query, "generateLength");
+        generateLength = parseInt(getParam(query, "generateLength"));
     }
 
     if (getParam(query, "sampleLen")) {
-        sampleLen = getParam(query, "sampleLen");
+        sampleLen = parseInt(getParam(query, "sampleLen"));
     }
 
     if (getParam(query, "sampleStep")) {
-        sampleStep = getParam(query, "sampleStep");
+        sampleStep = parseInt(getParam(query, "sampleStep"));
     }
 
     // get right task name
