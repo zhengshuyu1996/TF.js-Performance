@@ -10,6 +10,7 @@ let learningRate = 1e-2;
 let sampleLen = 40;
 let sampleStep = 3;
 let timeLimit = 10000;
+let rnnType = 'LSTM';
 
 let task;
 
@@ -83,8 +84,12 @@ function parseArgs(){
         sampleStep = parseInt(getParam(query, "sampleStep"));
     }
 
+    if (getParam(query, "rnnType")) {
+        rnnType = getParam(query, "rnnType");
+    }
+
     // get right task name
-    task = "jslib\ttraining\tLSTMTextGeneration\ttensorflowjs\t" + backend + "\t" 
+    task = "jslib\ttraining\tTextGeneration\ttensorflowjs\t" + rnnType + "\t" + backend + "\t" 
     + getParam(query, "layersizes") + "\t" + examplesPerEpoch + "\t" + batchSize
     + "\t";
     document.getElementById("task").innerText = task;

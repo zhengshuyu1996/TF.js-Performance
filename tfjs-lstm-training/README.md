@@ -20,7 +20,8 @@ Model: a simple LSTM model (with a little modification) from TensorFlow.js Examp
 8. learningRate (optional, default 1e-2)
 9. sampleLen (optional, default 40)
 10. sampleStep (optional, default 3)
+11. rnnType (optional: {LSTM, SimpleRNN, GRU}, default LSTM)
 
 ## Message
 
-`jslib training task=LSTMTextGeneration lib=tensorflowjs backend=backend layersizes=lstmLayerSizes examplesPerEpoch=examplesPerEpoch batchSize=batchSize sampleLen=sampleLen sampleStep=sampleStep trainingTimePerEpoch=avgTime`
+`jslib training TextGeneration tensorflowjs rnnType backend lstmLayerSizes examplesPerEpoch batchSize sampleLen sampleStep trainingTimePerBach`

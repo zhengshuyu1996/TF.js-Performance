@@ -7,6 +7,7 @@ let sampleStep = 3;
 let generateLength = 200;
 let temperature = 0.75;
 let timeLimit = 10000;
+let rnnType = 'LSTM';
 
 let task;
 
@@ -64,8 +65,12 @@ function parseArgs(){
         sampleStep = parseInt(getParam(query, "sampleStep"));
     }
 
+    if (getParam(query, "rnnType")) {
+        rnnType = getParam(query, "rnnType");
+    }
+
     // get right task name
-    task = "jslib\tinference\tLSTMTextGeneration\ttensorflowjs\t" + backend + "\t" 
+    task = "jslib\tinference\tTextGeneration\ttensorflowjs\t" + rnnType + "\t" + backend + "\t" 
     + getParam(query, "layersizes") + "\t";
     document.getElementById("task").innerText = task;
     return true;

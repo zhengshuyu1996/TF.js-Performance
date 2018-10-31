@@ -52,14 +52,49 @@ class LSTMTextGenerator {
     }
 
     this.model = tf.sequential();
-    for (let i = 0; i < lstmLayerSizes.length; ++i) {
-      const lstmLayerSize = lstmLayerSizes[i];
-      this.model.add(tf.layers.lstm({
-        units: lstmLayerSize,
-        returnSequences: i < lstmLayerSizes.length - 1,
-        inputShape: i === 0 ? [this.sampleLen_, this.charSetSize_] : undefined
-      }));
+
+    switch(rnnType) {
+      case 'SimpleRNN': 
+        for (let i = 0; i < lstmLayerSizes.length; ++i) {
+          const lstmLayerSize = lstmLayerSizes[i];
+          this.model.add(tf.layers.simpleRNN({
+            units: lstmLayerSize,
+            returnSequences: i < lstmLayerSizes.length - 1,
+            inputShape: i === 0 ? [this.sampleLen_, this.charSetSize_] : undefined
+          }));
+        }
+        break;
+      case 'GRU': 
+        for (let i = 0; i < lstmLayerSizes.length; ++i) {
+          const lstmLayerSize = lstmLayerSizes[i];
+          this.model.add(tf.layers.gru({
+            units: lstmLayerSize,
+            returnSequences: i < lstmLayerSizes.length - 1,
+            inputShape: i === 0 ? [this.sampleLen_, this.charSetSize_] : undefined
+          }));
+        }
+        break;
+      case 'LSTM': 
+        for (let i = 0; i < lstmLayerSizes.length; ++i) {
+          const lstmLayerSize = lstmLayerSizes[i];
+          this.model.add(tf.layers.lstm({
+            units: lstmLayerSize,
+            returnSequences: i < lstmLayerSizes.length - 1,
+            inputShape: i === 0 ? [this.sampleLen_, this.charSetSize_] : undefined
+          }));
+        }
+        break;
+      default:
+        throw new Error(`Unsupported RNN type: '${rnnType}'`);
     }
+    // for (let i = 0; i < lstmLayerSizes.length; ++i) {
+    //   const lstmLayerSize = lstmLayerSizes[i];
+    //   this.model.add(tf.layers.lstm({
+    //     units: lstmLayerSize,
+    //     returnSequences: i < lstmLayerSizes.length - 1,
+    //     inputShape: i === 0 ? [this.sampleLen_, this.charSetSize_] : undefined
+    //   }));
+    // }
     this.model.add(
         tf.layers.dense({units: this.charSetSize_, activation: 'softmax'}));
   }
@@ -160,6 +195,11 @@ class LSTMTextGenerator {
 
       input.dispose();
       output.dispose();
+
+      endTime = new Date().getTime();
+      if (endTime - startTime >= timeLimit) {
+        await triggerEnd(task + (endTime - startTime)/generateLength);
+      }
     }
     temperatureScalar.dispose();
     await onTextGenerationEnd();

@@ -16,7 +16,8 @@ Model: a simple LSTM model (with a little modification) from TensorFlow.js Examp
 4. sampleStep (optional, default 3)
 5. generateLength (optional, default 200)
 6. temperature (optional, default 0.75)
+7. rnnType (optional: {LSTM, SimpleRNN, GRU}, default LSTM)
 
 ## Message
 
-`jslib inference task=LSTMTextGeneration lib=tensorflowjs backend=backend layersizes=lstmLayerSizes sampleLen=sampleLen sampleStep=sampleStep generateLength=generateLength inferenceTimePerChar=avgTime`
+`jslib inference TextGeneration tensorflowjs rnnType backend lstmLayerSizes sampleLen sampleStep generateLength inferenceTimePerChar`
